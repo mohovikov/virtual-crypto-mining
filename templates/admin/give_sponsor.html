@@ -1,0 +1,43 @@
+{% extends 'layouts/admin.html' %}
+
+{% set title = "Выдача Спонсора" %}
+
+{% block content %}
+<h2 class="text-center pb-3 mb-3 border-bottom">
+  <i class="fa-solid fa-hand-holding-dollar"></i>
+  <span>{{ title }}</span>
+</h2>
+
+<div class="row justify-content-center">
+  <div class="col-5">
+    <div class="card">
+      <div class="card-body">
+        <form action="{{ url_for('admin.user_give_support', id=uid) }}" method="post">
+          {{ form.csrf_token() }}
+          <div class="mb-3">
+            {{ form.user_id.label }}
+            {{ form.user_id() }}
+          </div>
+          <div class="mb-3">
+            {{ form.username.label }}
+            {{ form.username() }}
+          </div>
+          <div class="mb-3">
+            {{ form.duration.label(class="form-label") }}
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fa-solid fa-clock"></i>
+              </span>
+              {{ form.duration() }}
+              {{ form.unit() }}
+            </div>
+          </div>
+          <div class="text-center">
+            {{ form.submit() }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

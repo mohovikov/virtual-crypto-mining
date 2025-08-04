@@ -1,0 +1,195 @@
+{% extends 'layouts/admin.html' %}
+
+{% set title = "Пользователи" %}
+
+{% block content %}
+<h2 class="text-center pb-3 mb-3 border-bottom">
+  <i class="fa-solid fa-users"></i>
+  <span>{{ title }}</span>
+</h2>
+
+<div class="row mb-3">
+  <div class="col-3">
+    <div class="card text-bg-primary">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-3">
+            <i class="fa-solid fa-users fa-4x"></i>
+          </div>
+          <div class="col-9 text-end">
+            <h3>{{ stats['total_users'] }}</h3>
+            <h5 class="mb-0">Всего пользователей</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-3">
+    <div class="card text-bg-danger">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-3">
+            <i class="fa-solid fa-users-slash fa-4x"></i>
+          </div>
+          <div class="col-9 text-end">
+            <h3>{{ stats['restricted_count'] }}</h3>
+            <h5 class="mb-0">Забаненных</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-3">
+    <div class="card text-bg-warning">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-3">
+            <i class="fa-solid fa-hand-holding-dollar fa-4x"></i>
+          </div>
+          <div class="col-9 text-end">
+            <h3>{{ stats['sponsor_count'] }}</h3>
+            <h5 class="mb-0">Спонсоров</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-3">
+    <div class="card text-bg-success">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-3">
+            <i class="fa-solid fa-user-secret fa-4x"></i>
+          </div>
+          <div class="col-9 text-end">
+            <h3>{{ stats['admin_count'] }}</h3>
+            <h5 class="mb-0">Администраторов</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<table class="table table-striped align-middle text-center">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Имя пользователя</th>
+      <th scope="col">Email</th>
+      <th scope="col">Группа привилегий</th>
+      <th scope="col">Статус</th>
+      <th scope="col">Клан</th>
+      <th scope="col">Дата регистрации</th>
+      {% if has_privilege(Privileges.ADMIN_MANAGE_USERS) %}
+      <th scope="col">Действия</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <th scope="col">{{ user.id }}</th>
+      <td>
+        {% if user.country %}
+          <div class="d-flex align-items-center justify-content-center">
+            <img
+            src="https://flagcdn.com/24x18/{{ user.country|lower }}.png"
+            srcset="https://flagcdn.com/40x30/{{ user.country|lower  }}.png 2x,
+              https://flagcdn.com/60x45/{{ user.country|lower  }}.png 3x"
+            width="24"
+            height="18"
+            class="me-2"
+            alt="{{ user.country }}">
+            <b>{{ user.username }}</b>
+          </div>
+        {% else %}
+        <b>{{ user.username }}</b>
+        {% endif %}
+      </td>
+      <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+      <td>
+        {% set group = groups.get(user.privileges) %}
+        {% if group %}
+            <span class="badge text-bg-{{ group.color_class }}">{{ group.name }}</span>
+        {% else %}
+            <span class="badge text-bg-danger">Неизвестно ({{ user.privileges }})</span>
+        {% endif %}
+      </td>
+      <td>
+        {% set user_status = check_user_status(user.privileges) %}
+        <span class="badge text-bg-{{ user_status.color_class }}">{{ user_status.text }}</span>
+      </td>
+      <td>TODO</td>
+      <td>
+        <time id="created_at" data-utc="{{ user.created_at }}"></time>
+      </td>
+      {% if has_privilege(Privileges.ADMIN_MANAGE_USERS) %}
+      <td>
+        <div class="btn-group btn-group-sm">
+          <a href="{{ url_for('admin.edit_user', id=user.id) }}" class="btn btn-primary" title="Редактировать пользователя">
+            <i class="fa-solid fa-pencil"></i>
+          </a>
+          {% if is_banned(user.privileges) %}
+          <a href="{{ url_for('admin.user_manage_ban', action="remove", id=user.id) }}" class="btn btn-success" title="Разбанить пользователя">
+            <i class="fa-solid fa-thumbs-up"></i>
+          </a>
+          {% else %}
+          <a href="{{ url_for('admin.user_manage_ban', action="add", id=user.id) }}" class="btn btn-warning" title="Забанить пользователя">
+            <i class="fa-solid fa-thumbs-down"></i>
+          </a>
+          {% endif %}
+
+          {% if is_restricted(user.privileges) %}
+          <a href="{{ url_for('admin.user_manage_restrict', action="remove", id=user.id) }}" class="btn btn-success" title="Снять ограничения пользователя">
+            <i class="fa-solid fa-circle-check"></i>
+          </a>
+          {% else %}
+          <a href="{{ url_for('admin.user_manage_restrict', action="add", id=user.id) }}" class="btn btn-warning" title="Ограничить пользователя">
+            <i class="fa-solid fa-circle-xmark"></i>
+          </a>
+          {% endif %}
+        </div>
+      </td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    const timeElements = document.querySelectorAll("time[data-utc]");
+
+    timeElements.forEach(el => {
+        const utcString = el.dataset.utc;
+        if (!utcString) return;
+
+        // Преобразуем в ISO-строку
+        const isoString = utcString.replace(" ", "T") + "Z";
+        const date = new Date(isoString);
+
+        if (isNaN(date)) {
+            el.textContent = "Неверная дата";
+            return;
+        }
+
+        // Устанавливаем атрибут datetime (в формате UTC ISO)
+        el.setAttribute("datetime", date.toISOString());
+
+        // Локальное отображение (на экране)
+        const options = {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+        };
+        el.textContent = date.toLocaleString(undefined, options);
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,264 @@
+{% extends 'layouts/admin.html' %}
+
+{% set title = "Редактирование пользователя" %}
+
+{% block css %}
+<style>
+  .half-col td {
+    width: 50%;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2 class="text-center pb-3 mb-3 border-bottom">
+  <i class="fa-solid fa-user"></i>
+  <span>{{ title }}</span>
+</h2>
+
+<form action="{{ url_for('admin.edit_user', id=user.id) }}" method="post">
+{{ form.csrf_token() }}
+  <table class="table table-striped align-middle half-col">
+    <tbody>
+      <tr>
+        <td>{{ form.id.label() }}</td>
+        <td>{{ form.id(value=user.id) }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.username.label() }}</td>
+        <td>{{ form.username(value=user.username) }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.username_aka.label() }}</td>
+        <td>{{ form.username_aka(value=user.username_aka or "") }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.email.label() }}</td>
+        <td>{{ form.email(value=user.email) }}</td>
+      </tr>
+      {% if has_privilege(Privileges.USER_SPONSOR, user.privileges) %}
+      <tr class="table-info">
+        <td>Срок действия спонсорства</td>
+        <td>
+          <time id="sponsor_expire" data-utc="{{ user.sponsor_expire }}" data-privileges="{{ user.privileges }}"></time>
+        </td>
+      </tr>
+      {% endif %}
+      <tr>
+        <td>
+          {{ form.userpage.label() }}
+          <p class="mb-0">
+            <small><a href="#">BBcode support</a></small>
+          </p>
+        </td>
+        <td>
+          <textarea name="{{ form.userpage.name }}" id="{{ form.userpage.name }}" rows="5" class="form-control">{{ user.userpage or "" }}</textarea>
+        </td>
+      </tr>
+      {% if has_privilege(Privileges.ADMIN_MANAGE_PRIVILEGES) %}
+      <tr>
+        <td class="align-top">
+          <span>Привилегии</span>
+          <p class="mb-0">
+            <small><i>Не нажимайте "USER_PUBLIC" или "USER_NORMAL".<br>Вместо этого используйте кнопки "забанить" или "ограничить", чтобы избежать путаницы</i></small>
+          </p>
+        </td>
+        <td>
+          <ul class="list-group">
+            {% for privilege_group in privileges_groups(user.privileges) %}
+            <li class="list-group-item">
+              <input
+                class="form-check-input me-1"
+                type="checkbox"
+                value="{{ privilege_group['value'] }}"
+                name="privilege"
+                id="{{ privilege_group['name'] }}"
+                {% if privilege_group['checked'] %}checked{% endif %}
+                {% if privilege_group['disabled'] %}disabled{% endif %}
+                onclick="updatePrivileges();">
+              <label class="form-check-label stretched-link" for="{{ privilege_group.name }}">{{ privilege_group.name }} ({{ privilege_group.value }})</label>
+            </li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>{{ form.privileges.label() }}</td>
+        <td>
+          {% if current_user.id == user.id %}
+            {{ form.privileges(value=user.privileges, class="form-control-plaintext", readonly=True) }}
+          {% else %}
+            {{ form.privileges(value=user.privileges, class="form-control") }}
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td>Группа привилегий</td>
+        <td>
+          <select name="privileges-group" id="privileges-group" class="form-select" onchange="groupUpdated();">
+            <option value="-1">None</option>
+            {% for group in groups %}
+            <option value="{{ group.privileges }}" {% if group.privileges == user.privileges %}selected{% endif %}>{{ group.name }} ({{ group.privileges }})</option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>{{ form.country.label() }}</td>
+        <td>{{ form.country(value=user.country or "") }}</td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-center">{{ form.submit() }}</td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</form>
+
+<div class="row">
+  <div class="col-6">
+    <div class="card">
+      <h5 class="card-header">Действия</h5>
+      <div class="card-body">
+        <div class="list-group">
+          <a href="#" class="list-group-item list-group-item-action list-group-item-primary">Профиль пользователя</a>
+          {% if is_banned(user.privileges) %}
+          <a href="{{ url_for('admin.user_manage_ban', action="remove", id=user.id, next=url_for('admin.edit_user', id=user.id)) }}" class="list-group-item list-group-item-action list-group-item-success">Разбанить пользователя</a>
+          {% else %}
+          <a href="{{ url_for('admin.user_manage_ban', action="add", id=user.id, next=url_for('admin.edit_user', id=user.id)) }}" class="list-group-item list-group-item-action list-group-item-warning">Забанить пользователя</a>
+          {% endif %}
+
+          {% if is_restricted(user.privileges) %}
+          <a href="{{ url_for('admin.user_manage_restrict', action="remove", id=user.id, next=url_for('admin.edit_user', id=user.id)) }}" class="list-group-item list-group-item-action list-group-item-success">Снять ограничения пользователя</a>
+          {% else %}
+          <a href="{{ url_for('admin.user_manage_restrict', action="add", id=user.id, next=url_for('admin.edit_user', id=user.id)) }}" class="list-group-item list-group-item-action list-group-item-warning">Ограничить пользователя</a>
+          {% endif %}
+
+          <a href="{{ url_for('admin.user_give_support', id=user.id) }}" class="list-group-item list-group-item-action list-group-item-success">Выдать "Спонсора"</a>
+          {% if has_privilege(user.privileges, Privileges.USER_SPONSOR) %}
+          <button type="button" class="list-group-item list-group-item-action list-group-item-warning" data-bs-toggle="modal" data-bs-target="#modalRemoveSponsor">Снять "Спонсора"</button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="card">
+      <h5 class="card-header">Опасная зона</h5>
+      <div class="card-body"></div>
+    </div>
+  </div>
+</div>
+
+{% if has_privilege(user.privileges, Privileges.USER_SPONSOR) %}
+<div class="modal fade" id="modalRemoveSponsor" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form action="{{ url_for('admin.user_remove_support', id=user.id) }}" method="post">
+      <div class="modal-content rounded-3 shadow">
+        <div class="modal-body p-4 text-center">
+          <h5>
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>Снятие статуса "Спонсора"</span>
+          </h5>
+          <p class="mb-0">Вы действительно хотите снять статус 'Спонсор'<br>с пользователя <strong>{{ user.username }}</strong>?</p>
+        </div>
+        <div class="modal-footer flex-nowrap p-0">
+          <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" data-bs-dismiss="modal">Отмена</button>
+          <button type="submit" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0">
+            <strong>Да, подтверждаю</strong>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    const FULL_ACCESS_MASK = 32767;
+
+    const timeElements = document.querySelectorAll("time#sponsor_expire");
+
+    timeElements.forEach((el) => {
+      const utcStr = el.getAttribute("data-utc");
+      const privilegesStr = el.getAttribute("data-privileges") || "0";
+      const privileges = parseInt(privilegesStr, 10);
+
+      const hasFullAccess = (privileges & FULL_ACCESS_MASK) === FULL_ACCESS_MASK;
+
+
+      if (!utcStr || utcStr.trim() === "") {
+        el.textContent = hasFullAccess ? "Навсегда" : "Ошибка получения даты";
+        el.removeAttribute("datetime");
+        return;
+      }
+
+      try {
+        // Преобразуем в ISO (обрезаем микросекунды)
+        const isoStr = utcStr.replace(" ", "T").split(".")[0] + "Z";
+        const utcDate = new Date(isoStr);
+
+        if (isNaN(utcDate)) {
+          el.textContent = hasFullAccess ? "Навсегда" : "Ошибка получения даты";
+          el.removeAttribute("datetime");
+          return;
+        }
+
+        // Устанавливаем атрибут datetime для семантики
+        el.setAttribute("datetime", utcDate.toISOString());
+
+        const options = {
+          hour: '2-digit',
+          minute: '2-digit'
+        };
+        
+        // Форматируем с учётом локализации
+        el.textContent = timeago.format(utcDate, "ru");
+        el.setAttribute("title", `Закончится ${utcDate.toLocaleDateString("ru-ru")} в ${utcDate.toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit' })}`)
+      } catch (e) {
+        el.textContent = hasFullAccess ? "Навсегда" : "Ошибка получения даты";
+        el.removeAttribute("datetime");
+      }
+    });
+  });
+
+  function updatePrivileges() {
+    var result = 0;
+    $("input:checkbox[name=privilege]:checked").each(function(){
+      result = Number(result) + Number($(this).val());
+    });
+
+    const UserSponsor = {{ Privileges.USER_SPONSOR }}
+    const UserNormal = {{ Privileges.USER_NORMAL }}
+    const UserPublic = {{ Privileges.USER_PUBLIC }}
+
+    var selectValue;
+    if (result !== (UserSponsor | UserNormal | UserPublic) ) {
+      selectValue = result & ~UserSponsor
+    } else {
+      selectValue = result;
+    }
+
+    $("#privileges-value").val(result);
+    $("#privileges-group").val(selectValue);
+  }
+
+  function groupUpdated() {
+    var privileges = $("#privileges-group option:selected").val();
+    if (privileges > -1) {
+      $("input:checkbox[name=privilege]").each(function(){
+        if (($(this).val() & privileges) > 0) {
+          $(this).prop("checked", true);
+        } else {
+          $(this).prop("checked", false);
+        }
+      });
+    }
+    updatePrivileges();
+  }
+</script>
+{% endblock %}

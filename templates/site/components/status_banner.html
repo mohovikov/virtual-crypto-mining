@@ -1,0 +1,24 @@
+{% if current_user.is_authenticated %}
+  {% if current_user.is_banned %}
+    <div class="alert alert-danger border border-danger-subtle rounded mb-3 shadow-sm text-center">
+      <h5 class="fw-bold text-danger-emphasis text-uppercase mb-3">
+        <i class="fas fa-ban fa-lg"></i>
+        <span>Аккаунт заблокирован</span>
+      </h5>
+      <div class="text-body">
+        Ваш аккаунт был <strong>заблокирован</strong>. Пожалуйста, свяжитесь с поддержкой, если считаете это ошибкой.
+      </div>
+    </div>
+  {% elif current_user.is_locked or current_user.is_restricted %}
+    <div class="alert alert-warning border border-warning-subtle rounded mb-3 shadow-sm text-center">
+      <h5 class="fw-bold text-warning-emphasis text-uppercase mb-3">
+        <i class="fas fa-user-lock fa-lg"></i>
+        <span>Аккаунт заблокирован</span>
+      </h5>
+      <div class="text-body">
+          Пока ваш аккаунт <strong>ограничен</strong>, вы не сможете взаимодействовать с другими игроками и ваши рекорды будут видны только вам.<br>
+          Обычно это результат автоматизированного процесса и, как правило, ограничение снимается в течение суток.
+      </div>
+    </div>
+  {% endif %}
+{% endif %}
