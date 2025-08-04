@@ -1,0 +1,20 @@
+from enum import IntEnum, unique
+
+
+@unique
+class Privileges(IntEnum):
+    USER_PUBLIC = 1 << 0
+    USER_NORMAL = 2 << 0
+    USER_SPONSOR = 2 << 1
+    ADMIN_ACCESS_PANEL = 2 << 2
+    ADMIN_MANAGE_USERS = 2 << 3
+    ADMIN_BAN_USERS = 2 << 4
+    ADMIN_SILENCE_USERS = 2 << 5
+    ADMIN_WIPE_USERS = 2 << 6
+    ADMIN_MANAGE_CLANS = 2 << 7
+    ADMIN_MANAGE_BADGES = 2 << 8
+    ADMIN_MANAGE_CRYPTOCURRENCIES = 2 << 9
+    ADMIN_VIEW_LOGS = 2 << 10
+    ADMIN_MANAGE_PRIVILEGES = 2 << 11
+    ADMIN_KICK_USERS = 2 << 12
+    ADMIN_MANAGE_SETTINGS = 2 << 13
