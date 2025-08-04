@@ -1,0 +1,51 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Flask instance folder (e.g. for SQLite DBs)
+instance/
+*.sqlite3
+*.db
+
+# Flask-Migrate cache and compiled files
+migrations/__pycache__/
+migrations/*.pyc
+
+# Logs
+*.log
+
+# Editor configs
+.vscode/
+.idea/
+
+# Python distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# macOS and Windows
+.DS_Store
+Thumbs.db
+
+# dotenv files (API keys, configs, etc.)
+.env
+.env.*
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# pip
+pip-log.txt
+
+# Type checking
+.mypy_cache/
