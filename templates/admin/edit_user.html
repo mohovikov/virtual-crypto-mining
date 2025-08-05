@@ -18,111 +18,119 @@
 
 <form action="{{ url_for('admin.edit_user', id=user.id) }}" method="post">
 {{ form.csrf_token() }}
-  <table class="table table-striped align-middle half-col">
-    <tbody>
-      <tr>
-        <td>{{ form.id.label() }}</td>
-        <td>{{ form.id(value=user.id) }}</td>
-      </tr>
-      <tr>
-        <td>{{ form.username.label() }}</td>
-        <td>{{ form.username(value=user.username) }}</td>
-      </tr>
-      <tr>
-        <td>{{ form.username_aka.label() }}</td>
-        <td>{{ form.username_aka(value=user.username_aka or "") }}</td>
-      </tr>
-      <tr>
-        <td>{{ form.email.label() }}</td>
-        <td>{{ form.email(value=user.email) }}</td>
-      </tr>
-      {% if has_privilege(Privileges.USER_SPONSOR, user.privileges) %}
-      <tr class="table-info">
-        <td>Срок действия спонсорства</td>
-        <td>
-          <time id="sponsor_expire" data-utc="{{ user.sponsor_expire }}" data-privileges="{{ user.privileges }}"></time>
-        </td>
-      </tr>
-      {% endif %}
-      <tr>
-        <td>
-          {{ form.userpage.label() }}<br>
-          <div class="btn-group btn-group-sm">
-            <a href="https://github.com/mohovikov/virtual-crypto-mining/wiki/Bootstrap-BBCode" class="btn btn-warning" title="Помощь по BBcode" target="_blank">
-              <i class="fa-solid fa-book"></i>
-            </a>
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#previewModal" onclick="previewBBCode()" title="Предпросмотр">
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-          </div>
-        </td>
-        <td>
-          <textarea name="{{ form.userpage.name }}" id="{{ form.userpage.name }}" rows="5" class="form-control">{{ user.userpage or "" }}</textarea>
-        </td>
-      </tr>
-      {% if has_privilege(Privileges.ADMIN_MANAGE_PRIVILEGES) %}
-      <tr>
-        <td class="align-top">
-          <span>Привилегии</span>
-          <p class="mb-0">
-            <small><i>Не нажимайте "USER_PUBLIC" или "USER_NORMAL".<br>Вместо этого используйте кнопки "забанить" или "ограничить", чтобы избежать путаницы</i></small>
-          </p>
-        </td>
-        <td>
-          <ul class="list-group">
-            {% for privilege_group in privileges_groups(user.privileges) %}
-            <li class="list-group-item">
-              <input
-                class="form-check-input me-1"
-                type="checkbox"
-                value="{{ privilege_group['value'] }}"
-                name="privilege"
-                id="{{ privilege_group['name'] }}"
-                {% if privilege_group['checked'] %}checked{% endif %}
-                {% if privilege_group['disabled'] %}disabled{% endif %}
-                onclick="updatePrivileges();">
-              <label class="form-check-label stretched-link" for="{{ privilege_group.name }}">{{ privilege_group.name }} ({{ privilege_group.value }})</label>
-            </li>
-            {% endfor %}
-          </ul>
-        </td>
-      </tr>
-      <tr>
-        <td>{{ form.privileges.label() }}</td>
-        <td>
-          {% if current_user.id == user.id %}
-            {{ form.privileges(value=user.privileges, class="form-control-plaintext", readonly=True) }}
-          {% else %}
-            {{ form.privileges(value=user.privileges, class="form-control") }}
-          {% endif %}
-        </td>
-      </tr>
-      <tr>
-        <td>Группа привилегий</td>
-        <td>
-          <select name="privileges-group" id="privileges-group" class="form-select" onchange="groupUpdated();">
-            <option value="-1">None</option>
-            {% for group in groups %}
-            <option value="{{ group.privileges }}" {% if group.privileges == user.privileges %}selected{% endif %}>{{ group.name }} ({{ group.privileges }})</option>
-            {% endfor %}
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td>{{ form.country.label() }}</td>
-        <td>{{ form.country(value=user.country or "") }}</td>
-      </tr>
-      <tr>
-        <td colspan="2" class="text-center">{{ form.submit() }}</td>
-      </tr>
-      {% endif %}
-    </tbody>
-  </table>
+  <div class="table-responsive-md">
+    <table class="table table-striped align-middle half-col">
+      <tbody>
+        <tr>
+          <td>{{ form.id.label() }}</td>
+          <td>{{ form.id(value=user.id) }}</td>
+        </tr>
+        <tr>
+          <td>{{ form.username.label() }}</td>
+          <td>{{ form.username(value=user.username) }}</td>
+        </tr>
+        <tr>
+          <td>{{ form.username_aka.label() }}</td>
+          <td>{{ form.username_aka(value=user.username_aka or "") }}</td>
+        </tr>
+        <tr>
+          <td>{{ form.email.label() }}</td>
+          <td>{{ form.email(value=user.email) }}</td>
+        </tr>
+        {% if has_privilege(Privileges.USER_SPONSOR, user.privileges) %}
+        <tr class="table-info">
+          <td>Срок действия спонсорства</td>
+          <td>
+            <time id="sponsor_expire" data-utc="{{ user.sponsor_expire }}" data-privileges="{{ user.privileges }}"></time>
+          </td>
+        </tr>
+        {% endif %}
+        <tr>
+          <td>
+            {{ form.userpage.label() }}<br>
+            <div class="btn-group btn-group-sm">
+              <a href="https://github.com/mohovikov/virtual-crypto-mining/wiki/Bootstrap-BBCode" class="btn btn-warning" title="Помощь по BBcode" target="_blank">
+                <i class="fa-solid fa-book"></i>
+              </a>
+              <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#previewModal" onclick="previewBBCode()" title="Предпросмотр">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+            </div>
+          </td>
+          <td>
+            <textarea name="{{ form.userpage.name }}" id="{{ form.userpage.name }}" rows="5" class="form-control">{{ user.userpage or "" }}</textarea>
+          </td>
+        </tr>
+        {% if has_privilege(Privileges.ADMIN_MANAGE_PRIVILEGES) %}
+        <tr>
+          <td class="align-top">
+            <span>Привилегии</span>
+            <p class="mb-0 d-none d-md-block">
+              <small><i>Не нажимайте "USER_PUBLIC" или "USER_NORMAL".<br>Вместо этого используйте кнопки "забанить" или "ограничить", чтобы избежать путаницы</i></small>
+            </p>
+          </td>
+          <td>
+            <ul class="list-group">
+              {% for privilege_group in privileges_groups(user.privileges) %}
+              <li class="list-group-item">
+                <input
+                  class="form-check-input me-1"
+                  type="checkbox"
+                  value="{{ privilege_group['value'] }}"
+                  name="privilege"
+                  id="{{ privilege_group['name'] }}"
+                  {% if privilege_group['checked'] %}checked{% endif %}
+                  {% if privilege_group['disabled'] %}disabled{% endif %}
+                  onclick="updatePrivileges();">
+                <label class="form-check-label stretched-link" for="{{ privilege_group.name }}">{{ privilege_group.name }} ({{ privilege_group.value }})</label>
+              </li>
+              {% endfor %}
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>{{ form.privileges.label() }}</td>
+          <td>
+            {% if current_user.id == user.id %}
+              {{ form.privileges(value=user.privileges, class="form-control-plaintext", readonly=True) }}
+            {% else %}
+              {{ form.privileges(value=user.privileges, class="form-control") }}
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td>Группа привилегий</td>
+          <td>
+            <select name="privileges-group" id="privileges-group" class="form-select" onchange="groupUpdated();">
+              <option value="-1">None</option>
+              {% for group in groups %}
+              <option value="{{ group.privileges }}" {% if group.privileges == user.privileges %}selected{% endif %}>{{ group.name }} ({{ group.privileges }})</option>
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>{{ form.country.label() }}</td>
+          <td>
+            <select name="{{ form.country.name }}" id="{{ form.country.name }}" class="form-select">
+              {% for country in form.country.choices %}
+              <option value="{{ country[0] }}" {% if country[0] == user.country %}selected{% endif %}>{{ country[1] }}</option>
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" class="text-center">{{ form.submit() }}</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
 </form>
 
 <div class="row">
-  <div class="col-6">
-    <div class="card">
+  <div class="col-12 col-md-6">
+    <div class="card mb-3">
       <h5 class="card-header">Действия</h5>
       <div class="card-body">
         <div class="list-group">
@@ -147,7 +155,7 @@
       </div>
     </div>
   </div>
-  <div class="col-6">
+  <div class="col-12 col-md-6">
     <div class="card">
       <h5 class="card-header">Опасная зона</h5>
       <div class="card-body"></div>

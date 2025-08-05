@@ -2,6 +2,8 @@ from flask_wtf import FlaskForm
 from wtforms import IntegerField, StringField, SelectField, SubmitField, TextAreaField
 from wtforms.validators import InputRequired, NumberRange, DataRequired, Email
 
+from core import utils
+
 
 class SponsorForm(FlaskForm):
     user_id = IntegerField("ID пользователя", render_kw={"readonly": True, "class": "form-control-plaintext"})
@@ -27,7 +29,7 @@ class UserEditForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()], render_kw={"class": "form-control"})
     userpage = TextAreaField("Раздел \"Информация\"", render_kw={"class": "form-control"})
     privileges = IntegerField("Значение привелегий", render_kw={"id": "privileges-value"})
-    country = StringField("Страна", render_kw={"class": "form-control"})
+    country = SelectField("Страна", choices=utils.get_country_choices())
 
     submit = SubmitField("Сохранить изменения", render_kw={"class": "btn btn-primary"})
 

@@ -4,5 +4,6 @@ Flask-Login
 Flask-Migrate
 Flask-SQLAlchemy
 Flask-WTF
+pycountry
 python-dateutil
 python-dotenv

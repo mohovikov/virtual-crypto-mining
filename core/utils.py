@@ -1,4 +1,6 @@
+from typing import List, Tuple
 from flask_login import current_user
+import pycountry
 
 from core.constansts.privileges import Privileges
 
@@ -84,3 +86,10 @@ def get_privileges_checklist(user_privileges: int = 3) -> list[dict]:
             "disabled": (value <= 2)
         })
     return result
+
+def get_country_choices() -> List[Tuple[str, str]]:
+    countries = list(pycountry.countries)
+    return sorted(
+        [(country.alpha_2, country.name) for country in countries],
+        key=lambda x: x[1]
+    )
