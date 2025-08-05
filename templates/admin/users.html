@@ -8,9 +8,9 @@
   <span>{{ title }}</span>
 </h2>
 
-<div class="row mb-3">
-  <div class="col-3">
-    <div class="card text-bg-primary">
+<div class="row align-items-center">
+  <div class="col-12 col-md-3">
+    <div class="card text-bg-primary mb-3">
       <div class="card-body">
         <div class="row">
           <div class="col-3">
@@ -24,8 +24,8 @@
       </div>
     </div>
   </div>
-  <div class="col-3">
-    <div class="card text-bg-danger">
+  <div class="col-12 col-md-3">
+    <div class="card text-bg-danger mb-3">
       <div class="card-body">
         <div class="row">
           <div class="col-3">
@@ -39,8 +39,8 @@
       </div>
     </div>
   </div>
-  <div class="col-3">
-    <div class="card text-bg-warning">
+  <div class="col-12 col-md-3">
+    <div class="card text-bg-warning mb-3">
       <div class="card-body">
         <div class="row">
           <div class="col-3">
@@ -54,8 +54,8 @@
       </div>
     </div>
   </div>
-  <div class="col-3">
-    <div class="card text-bg-success">
+  <div class="col-12 col-md-3">
+    <div class="card text-bg-success mb-3">
       <div class="card-body">
         <div class="row">
           <div class="col-3">
@@ -71,89 +71,91 @@
   </div>
 </div>
 
-<table class="table table-striped align-middle text-center">
-  <thead>
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Имя пользователя</th>
-      <th scope="col">Email</th>
-      <th scope="col">Группа привилегий</th>
-      <th scope="col">Статус</th>
-      <th scope="col">Клан</th>
-      <th scope="col">Дата регистрации</th>
-      {% if has_privilege(Privileges.ADMIN_MANAGE_USERS) %}
-      <th scope="col">Действия</th>
-      {% endif %}
-    </tr>
-  </thead>
-  <tbody>
-    {% for user in users %}
-    <tr>
-      <th scope="col">{{ user.id }}</th>
-      <td>
-        {% if user.country %}
-          <div class="d-flex align-items-center justify-content-center">
-            <img
-            src="https://flagcdn.com/24x18/{{ user.country|lower }}.png"
-            srcset="https://flagcdn.com/40x30/{{ user.country|lower  }}.png 2x,
-              https://flagcdn.com/60x45/{{ user.country|lower  }}.png 3x"
-            width="24"
-            height="18"
-            class="me-2"
-            alt="{{ user.country }}">
-            <b>{{ user.username }}</b>
-          </div>
-        {% else %}
-        <b>{{ user.username }}</b>
+<div class="table-responsive-md">
+  <table class="table table-striped align-middle text-center">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Имя пользователя</th>
+        <th scope="col">Email</th>
+        <th scope="col">Группа привилегий</th>
+        <th scope="col">Статус</th>
+        <th scope="col">Клан</th>
+        <th scope="col">Дата регистрации</th>
+        {% if has_privilege(Privileges.ADMIN_MANAGE_USERS) %}
+        <th scope="col">Действия</th>
         {% endif %}
-      </td>
-      <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
-      <td>
-        {% set group = groups.get(user.privileges) %}
-        {% if group %}
-            <span class="badge text-bg-{{ group.color_class }}">{{ group.name }}</span>
-        {% else %}
-            <span class="badge text-bg-danger">Неизвестно ({{ user.privileges }})</span>
-        {% endif %}
-      </td>
-      <td>
-        {% set user_status = check_user_status(user.privileges) %}
-        <span class="badge text-bg-{{ user_status.color_class }}">{{ user_status.text }}</span>
-      </td>
-      <td>TODO</td>
-      <td>
-        <time id="created_at" data-utc="{{ user.created_at }}"></time>
-      </td>
-      {% if has_privilege(Privileges.ADMIN_MANAGE_USERS) %}
-      <td>
-        <div class="btn-group btn-group-sm">
-          <a href="{{ url_for('admin.edit_user', id=user.id) }}" class="btn btn-primary" title="Редактировать пользователя">
-            <i class="fa-solid fa-pencil"></i>
-          </a>
-          {% if is_banned(user.privileges) %}
-          <a href="{{ url_for('admin.user_manage_ban', action="remove", id=user.id) }}" class="btn btn-success" title="Разбанить пользователя">
-            <i class="fa-solid fa-thumbs-up"></i>
-          </a>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <th scope="col">{{ user.id }}</th>
+        <td>
+          {% if user.country %}
+            <div class="d-flex align-items-center justify-content-center">
+              <img
+              src="https://flagcdn.com/24x18/{{ user.country|lower }}.png"
+              srcset="https://flagcdn.com/40x30/{{ user.country|lower  }}.png 2x,
+                https://flagcdn.com/60x45/{{ user.country|lower  }}.png 3x"
+              width="24"
+              height="18"
+              class="me-2"
+              alt="{{ user.country }}">
+              <b>{{ user.username }}</b>
+            </div>
           {% else %}
-          <a href="{{ url_for('admin.user_manage_ban', action="add", id=user.id) }}" class="btn btn-warning" title="Забанить пользователя">
-            <i class="fa-solid fa-thumbs-down"></i>
-          </a>
+          <b>{{ user.username }}</b>
           {% endif %}
+        </td>
+        <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+        <td>
+          {% set group = groups.get(user.privileges) %}
+          {% if group %}
+              <span class="badge text-bg-{{ group.color_class }}">{{ group.name }}</span>
+          {% else %}
+              <span class="badge text-bg-danger">Неизвестно ({{ user.privileges }})</span>
+          {% endif %}
+        </td>
+        <td>
+          {% set user_status = check_user_status(user.privileges) %}
+          <span class="badge text-bg-{{ user_status.color_class }}">{{ user_status.text }}</span>
+        </td>
+        <td>TODO</td>
+        <td>
+          <time id="created_at" data-utc="{{ user.created_at }}"></time>
+        </td>
+        {% if has_privilege(Privileges.ADMIN_MANAGE_USERS) %}
+        <td>
+          <div class="btn-group btn-group-sm">
+            <a href="{{ url_for('admin.edit_user', id=user.id) }}" class="btn btn-primary" title="Редактировать пользователя">
+              <i class="fa-solid fa-pencil"></i>
+            </a>
+            {% if is_banned(user.privileges) %}
+            <a href="{{ url_for('admin.user_manage_ban', action="remove", id=user.id) }}" class="btn btn-success" title="Разбанить пользователя">
+              <i class="fa-solid fa-thumbs-up"></i>
+            </a>
+            {% else %}
+            <a href="{{ url_for('admin.user_manage_ban', action="add", id=user.id) }}" class="btn btn-warning" title="Забанить пользователя">
+              <i class="fa-solid fa-thumbs-down"></i>
+            </a>
+            {% endif %}
 
-          {% if is_restricted(user.privileges) %}
-          <a href="{{ url_for('admin.user_manage_restrict', action="remove", id=user.id) }}" class="btn btn-success" title="Снять ограничения пользователя">
-            <i class="fa-solid fa-circle-check"></i>
-          </a>
-          {% else %}
-          <a href="{{ url_for('admin.user_manage_restrict', action="add", id=user.id) }}" class="btn btn-warning" title="Ограничить пользователя">
-            <i class="fa-solid fa-circle-xmark"></i>
-          </a>
-          {% endif %}
-        </div>
-      </td>
-      {% endif %}
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+            {% if is_restricted(user.privileges) %}
+            <a href="{{ url_for('admin.user_manage_restrict', action="remove", id=user.id) }}" class="btn btn-success" title="Снять ограничения пользователя">
+              <i class="fa-solid fa-circle-check"></i>
+            </a>
+            {% else %}
+            <a href="{{ url_for('admin.user_manage_restrict', action="add", id=user.id) }}" class="btn btn-warning" title="Ограничить пользователя">
+              <i class="fa-solid fa-circle-xmark"></i>
+            </a>
+            {% endif %}
+          </div>
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>  
+</div>
 {% endblock %}
