@@ -46,10 +46,15 @@
       {% endif %}
       <tr>
         <td>
-          {{ form.userpage.label() }}
-          <p class="mb-0">
-            <small><a href="#">BBcode support</a></small>
-          </p>
+          {{ form.userpage.label() }}<br>
+          <div class="btn-group btn-group-sm">
+            <a href="https://github.com/mohovikov/virtual-crypto-mining/wiki/Bootstrap-BBCode" class="btn btn-warning" title="Помощь по BBcode" target="_blank">
+              <i class="fa-solid fa-book"></i>
+            </a>
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#previewModal" onclick="previewBBCode()" title="Предпросмотр">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
         </td>
         <td>
           <textarea name="{{ form.userpage.name }}" id="{{ form.userpage.name }}" rows="5" class="form-control">{{ user.userpage or "" }}</textarea>
@@ -173,7 +178,18 @@
   </div>
 </div>
 {% endif %}
-
+<!-- Модальное окно -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="previewModalLabel">Предпросмотр</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body" id="userpage-preview"></div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block js %}
@@ -225,5 +241,11 @@
       }
     });
   });
+
+  function previewBBCode() {
+    const input = document.getElementById("userpage").value;
+    const html = parseBBCode(input);
+    document.getElementById("userpage-preview").innerHTML = html;
+  }
 </script>
 {% endblock %}
