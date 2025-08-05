@@ -70,7 +70,7 @@ def check_user_status(privileges) -> dict[str, str]:
             "color_class": "success"
         }
 
-def get_privileges_checklist(user_privileges: int) -> list[dict]:
+def get_privileges_checklist(user_privileges: int = 3) -> list[dict]:
     result = []
     for name, privilege in Privileges.__members__.items():
         value = privilege.value
