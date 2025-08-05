@@ -48,6 +48,8 @@ class PrivilegesGroups(db.Model):
     name: Mapped[str] = mapped_column(String(64), nullable=False)
     privileges: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
     color_class: Mapped[str] = mapped_column(String(32), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     def __init__(self, name: str, privileges: int, color_class: str) -> None:
         self.name = name
