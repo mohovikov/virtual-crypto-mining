@@ -1,5 +1,9 @@
 from .privileges import (
-    get_all_privileges_groups
+    get_all_privileges_groups,
+    get_privileges_groups_by_id,
+    add_privileges_groups,
+    update_privileges_groups,
+    delete_privileges_groups
 )
 from .users import (
     get_all_users,
@@ -18,6 +22,10 @@ from .users import (
 __all__ = [
     # Privileges Groups
     "get_all_privileges_groups",
+    "get_privileges_groups_by_id",
+    "add_privileges_groups",
+    "update_privileges_groups",
+    "delete_privileges_groups",
 
     # Users
     "get_all_users",

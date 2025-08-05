@@ -30,3 +30,19 @@ class UserEditForm(FlaskForm):
     country = StringField("Страна", render_kw={"class": "form-control"})
 
     submit = SubmitField("Сохранить изменения", render_kw={"class": "btn btn-primary"})
+
+class PrivilegesGroupsForm(FlaskForm):
+    name = StringField("Название", render_kw={"class": "form-control"})
+    privileges = IntegerField("Значение привелегий", validators=[NumberRange(min=0)], render_kw={"id": "privileges-value", "class": "form-control"})
+    color_class = SelectField("Класс цвета", render_kw={"class": "form-select"}, choices=(
+        ("danger", "Красный"),
+        ("dark", "Черный"),
+        ("info", "Голубой"),
+        ("light", "Белый"),
+        ("primary", "Синий"),
+        ("secondary", "Серый"),
+        ("success", "Зеленый"),
+        ("warning", "Желтый"),
+    ))
+
+    submit = SubmitField("Сохранить изменения", render_kw={"class": "btn btn-primary"})

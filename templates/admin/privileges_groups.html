@@ -1,0 +1,76 @@
+{% extends 'layouts/admin.html' %}
+
+{% set title = "Группы привилегий" %}
+
+{% block content %}
+<h2 class="text-center pb-3 mb-3 border-bottom">
+  <i class="fa-solid fa-layer-group"></i>
+  <span>{{ title }}</span>
+</h2>
+
+<div class="row justify-content-center">
+  <div class="col-6">
+    <table class="table table-striped align-middle text-center">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Название</th>
+          <th scope="col">Привилегии</th>
+          <th scope="col">Дата создания | обновления</th>
+          {% if has_privilege(Privileges.ADMIN_MANAGE_PRIVILEGES) %}
+          <th scope="col">Действия</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for privilege_group in privileges_groups %}
+        <tr>
+          <th scope="col">{{ privilege_group.id }}</th>
+          <td>
+            {% if privilege_group.color_class %}
+            <span class="badge text-bg-{{ privilege_group.color_class }}">{{ privilege_group.name }}</span>
+            {% else %}
+            {{ privilege_group.name }}
+            {% endif %}
+          </td>
+          <td>{{ privilege_group.privileges }}</td>
+          <td class="text-start">
+            <p class="mb-0">Созданно: <time class="badge text-bg-primary" data-utc="{{ privilege_group.created_at }}"></time></p>
+            <p class="mb-0">Обновленно: <time class="badge text-bg-primary" data-utc="{{ privilege_group.updated_at }}"></time></p>
+          </td>
+          {% if has_privilege(Privileges.ADMIN_MANAGE_USERS) %}
+          <td>
+            <div class="btn-group btn-group-sm">
+              <a href="{{ url_for('admin.privileges_groups_edit', id=privilege_group.id) }}" class="btn btn-primary" title="Редактировать группу">
+                <i class="fa-solid fa-pencil"></i>
+              </a>
+              <a href="#" class="btn btn-success" title="Список пользователей с данной группой привилегий">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </a>
+            </div>
+          </td>
+          {% endif %}
+        </tr>
+        {% else %}
+        <tr>
+          {% if has_privilege(Privileges.ADMIN_MANAGE_PRIVILEGES) %}
+          <td colspan="6">
+          {% else %}
+          <td colspan="5">
+          {% endif %}
+            <div class="alert alert-info text-center mb-0" role="alert">Здесь пока-что пусто...</div>
+          </td>
+        </tr>
+        {% endfor %}
+        {% if has_privilege(Privileges.ADMIN_MANAGE_PRIVILEGES) %}
+        <tr>
+          <td colspan="6" class="text-center">
+            <a href="{{ url_for('admin.privileges_groups_add') }}" class="btn btn-sm btn-primary">Добавить новую группу привилегий</a>
+          </td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

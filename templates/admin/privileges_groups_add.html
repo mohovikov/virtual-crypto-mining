@@ -1,0 +1,60 @@
+{% extends 'layouts/admin.html' %}
+
+{% set title = "Новая группа привилегий" %}
+
+{% block css %}
+<style>
+  .half-col td {
+    width: 50%;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2 class="text-center pb-3 mb-3 border-bottom">
+  <i class="fa-solid fa-hand-holding-dollar"></i>
+  <span>{{ title }}</span>
+</h2>
+
+<form action="{{ url_for('admin.privileges_groups_add') }}" method="post">
+  {{ form.csrf_token() }}
+  <table class="table table-striped w-75 mx-auto align-middle half-col">
+    <tbody>
+      <tr>
+        <td>{{ form.name.label }}</td>
+        <td>{{ form.name }}</td>
+      </tr>
+      <tr>
+        <td class="align-top">Привилегии<br><small><i>Не нажимайте "USER_PUBLIC" или "USER_NORMAL"</i></small></td>
+        <td>
+          <ul class="list-group">
+            {% for privilege_group in privileges_groups() %}
+            <li class="list-group-item">
+              <input
+                class="form-check-input me-1"
+                type="checkbox"
+                value="{{ privilege_group['value'] }}"
+                name="privilege"
+                id="{{ privilege_group['name'] }}"
+                onclick="updatePrivileges();">
+              <label class="form-check-label stretched-link" for="{{ privilege_group.name }}">{{ privilege_group.name }} ({{ privilege_group.value }})</label>
+            </li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>{{ form.privileges.label }}</td>
+        <td>{{ form.privileges(value=0) }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.color_class.label }}</td>
+        <td>{{ form.color_class }}</td>
+      </tr>
+      <tr class="text-center">
+        <td colspan="2">{{ form.submit() }}</td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+{% endblock %}

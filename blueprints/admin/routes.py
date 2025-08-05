@@ -1,7 +1,6 @@
 from flask import flash, redirect, render_template, request, url_for
 
-from blueprints.admin import admin, services
-from blueprints.admin.forms import SponsorForm, UserEditForm
+from blueprints.admin import admin, services, forms
 
 
 @admin.route("/dashboard")
@@ -20,7 +19,7 @@ def users():
 @admin.route("/user/edit", methods=["GET", "POST"])
 def edit_user():
     success, *data = services.get_user_by_id(request.args['id'])
-    form = UserEditForm()
+    form = forms.UserEditForm()
 
     if not success:
         message, category = data
@@ -80,13 +79,14 @@ def user_manage_restrict():
 @admin.route("/user/support/remove", methods=["POST"])
 def user_remove_support():
     uid = request.args["id"]
-    user = services.get_user_by_id(uid)
+    success, *data = services.get_user_by_id(uid)
 
-    if not user:
-        flash("Пользователя с таким ID не найдено!", "warning")
+    if not success:
+        message, category = data
+        flash(message, category)
         return redirect(url_for('admin.users'))
 
-    answer, message, category = services.remove_sponsor(user)
+    answer, message, category = services.remove_sponsor(data[0]) # type: ignore
 
     if answer:
         flash(message, category)
@@ -98,22 +98,19 @@ def user_remove_support():
 @admin.route("/user/support/add", methods=["GET", "POST"])
 def user_give_support():
     uid = request.args["id"]
-    form = SponsorForm()
-    user = services.get_user_by_id(uid)
+    form = forms.SponsorForm()
+    success, *data = services.get_user_by_id(request.args['id'])
 
-    if not user:
-        flash("Пользователя с таким ID не найдено!", "warning")
+    if not success:
+        message, category = data
+        flash(message, category)
         return redirect(url_for('admin.users'))
-
-    if request.method == 'GET':
-        form.user_id.data = user.id
-        form.username.data = user.username
 
     if form.validate_on_submit():
         duration = form.duration.data
         unit = form.unit.data
 
-        answer, message, category = services.give_sponsor(user, duration, unit) # type: ignore
+        answer, message, category = services.give_sponsor(data[0], duration, unit) # type: ignore
         if answer:
             flash(message, category)
             return redirect(url_for('admin.users'))
@@ -121,4 +118,65 @@ def user_give_support():
             flash(message, category)
             return redirect(url_for('admin.edit_user', id=uid))
 
-    return render_template("admin/give_sponsor.html", form=form, uid=user.id)
+    return render_template("admin/give_sponsor.html",
+                           form=form,
+                           user=data[0])
+
+@admin.route("/privileges-groups")
+def privileges_groups():
+    return render_template(
+        "admin/privileges_groups.html",
+        privileges_groups = services.get_all_privileges_groups()
+    )
+
+@admin.route("/privileges-group/add", methods=["GET", "POST"])
+def privileges_groups_add():
+    form = forms.PrivilegesGroupsForm()
+    if form.validate_on_submit():
+        success, message, category = services.add_privileges_groups(form)
+        if not success:
+            flash(message, category)
+            return redirect(url_for('admin.privileges_groups_add'))
+        flash(message, category)
+        return redirect(url_for('admin.privileges_groups'))
+
+    return render_template(
+        "admin/privileges_groups_add.html",
+        form = form
+    )
+
+@admin.route("/privileges-group/edit", methods=["GET", "POST"])
+def privileges_groups_edit():
+    success, *data = services.get_privileges_groups_by_id(int(request.args['id']))
+    form = forms.PrivilegesGroupsForm()
+
+    if not success:
+        message, category = data
+        flash(message, category)
+        return redirect(url_for('admin.privileges_groups'))
+
+    if form.validate_on_submit():
+        success, message, category = services.update_privileges_groups(data[0], form)
+        if not success:
+            flash(message, category)
+            return redirect(url_for('admin.privileges_groups_edit', id=request.args['id']))
+        flash(message, category)
+        return redirect(url_for('admin.privileges_groups'))
+
+    return render_template(
+        "admin/privileges_groups_edit.html",
+        form = form,
+        privilege_group=data[0]
+    )
+
+@admin.route("/privileges-group/delete", methods=["POST"])
+def privileges_groups_delete():
+    id = int(request.args["id"])
+    success, message, category = services.delete_privileges_groups(id)
+
+    if not success:
+        flash(message, category)
+        return redirect(url_for('admin.privileges_groups'))
+
+    flash(message, category)
+    return redirect(url_for('admin.privileges_groups'))
