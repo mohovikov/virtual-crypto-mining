@@ -47,7 +47,7 @@ def update_user(user: Users, form: UserEditForm) -> tuple[str, str]:
         user.country = str(form.country.data)
 
         db.session.commit()
-        return f"Пользователь {user.username} успешно обновлён.", "success"
+        return f"Пользователь {form.username.data} успешно обновлён.", "success"
     except Exception as e:
         db.session.rollback()
         print(e)
