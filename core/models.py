@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from flask_login import UserMixin
-from sqlalchemy import String, Integer, DateTime
+from sqlalchemy import String, Integer, DateTime, Text
 from sqlalchemy.orm import Mapped, mapped_column
 from typing import Optional
 
@@ -55,3 +55,20 @@ class PrivilegesGroups(db.Model):
         self.name = name
         self.privileges = privileges
         self.color_class = color_class
+
+class Logs(db.Model):
+    __tablename__ = "logs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    uid: Mapped[int] = mapped_column(Integer, nullable=False)
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    through: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+
+    def __repr__(self):
+        return f"<Logs id={self.id} uid={self.uid} created_at={self.created_at}>"
+    
+    def __init__(self, uid:int, text: str, through: str) -> None:
+        self.uid = uid
+        self.text = text
+        self.through = through
