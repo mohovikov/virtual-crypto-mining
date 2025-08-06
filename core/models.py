@@ -14,7 +14,7 @@ class Users(UserMixin, db.Model):
 
     username: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
     username_aka: Mapped[str] = mapped_column(String(50), nullable=True)
-    userpage: Mapped[str] = mapped_column(String(100), nullable=True)
+    userpage: Mapped[str] = mapped_column(Text, nullable=True)
     country: Mapped[str] = mapped_column(String(2), nullable=True)  # ISO-код страны
 
     email: Mapped[str] = mapped_column(String(120), nullable=False, unique=True)
