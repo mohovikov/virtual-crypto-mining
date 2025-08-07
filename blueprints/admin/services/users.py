@@ -1,16 +1,25 @@
 from datetime import datetime, timedelta, timezone
 from dateutil.relativedelta import relativedelta
 from typing import Any
-from flask import flash
 from sqlalchemy import func
 
+from blueprints.admin import services
 from blueprints.admin.forms import UserEditForm
 from core import db
 from core.constansts.privileges import Privileges
-from core.models import Users
+from core.models import Users, UsersDeleted
+
+USERS_PER_PAGE = 50
+
 
 def get_all_users():
     return Users.query.all()
+
+def get_users_paginated(page: int = 1):
+    return Users.query.order_by(Users.id.asc()).paginate(page=page, per_page=USERS_PER_PAGE)
+
+def get_users_deleted_paginated(page: int = 1):
+    return UsersDeleted.query.order_by(UsersDeleted.deleted_at.desc()).paginate(page=page, per_page=USERS_PER_PAGE)
 
 def get_users_stats() -> dict[str, Any]:
     total_users = db.session.query(func.count(Users.id)).scalar()
@@ -47,6 +56,7 @@ def update_user(user: Users, form: UserEditForm) -> tuple[str, str]:
         user.country = str(form.country.data)
 
         db.session.commit()
+        services.add_log(f"обновил пользователя {form.username.data}")
         return f"Пользователь {form.username.data} успешно обновлён.", "success"
     except Exception as e:
         db.session.rollback()
@@ -76,6 +86,7 @@ def give_sponsor(user: Users, duration: int, unit: str):
         user.sponsor_expire = expire_at
         user.privileges |= Privileges.USER_SPONSOR
         db.session.commit()
+        services.add_log(f"выдал спонсора пользователю {user.username}")
         return True, f"Спонсор выдан пользователю {user.username}", "success"
     except Exception as ex:
         print(ex)
@@ -87,6 +98,7 @@ def remove_sponsor(user: Users):
         user.privileges &= ~Privileges.USER_SPONSOR
         user.sponsor_expire = None
         db.session.commit()
+        services.add_log(f"снял спонсора с пользователя {user.username}")
         return True, f"Спонсорство снято с пользователя {user.username}", "warning"
     except Exception as ex:
         print(ex)
@@ -101,7 +113,7 @@ def ban_user(id: int):
 
     user.privileges = (user.privileges & ~Privileges.USER_NORMAL) & ~Privileges.USER_PUBLIC
     db.session.commit()
-    # utils.add_logs(f"забанил пользователя {user.username}")
+    services.add_log(f"забанил пользователя {user.username}")
     return f"{user.username} забанен", "warning"
 
 
@@ -114,7 +126,7 @@ def unban_user(id: int):
     user.privileges |= Privileges.USER_NORMAL
     user.privileges |= Privileges.USER_PUBLIC
     db.session.commit()
-    # utils.add_logs(f"разбанил пользователя {user.username}")
+    services.add_log(f"разбанил пользователя {user.username}")
     return f"{user.username} разбанен", "success"
 
 
@@ -126,7 +138,7 @@ def restrict_user(id: int):
 
     user.privileges = (user.privileges | Privileges.USER_NORMAL) & ~Privileges.USER_PUBLIC
     db.session.commit()
-    # utils.add_logs(f"ограничил {user.username}")
+    services.add_log(f"ограничил пользователя {user.username}")
     return f"{user.username} ограничен", "warning"
 
 
@@ -139,5 +151,27 @@ def unrestrict_user(id: int):
     user.privileges |= Privileges.USER_NORMAL
     user.privileges |= Privileges.USER_PUBLIC
     db.session.commit()
-    # utils.add_logs(f"снял ограничения с {user.username}")
+    services.add_log(f"снял ограничения с пользователя {user.username}")
     return f"{user.username} разблокирован", "success"
+
+def delete_user(id: int, reason: str | None):
+    user = Users.query.get(id)
+
+    if not user:
+        return False, "Пользователь не найден!", "warning"
+
+    try:
+        deleted = UsersDeleted(
+            username=user.username,
+            email=user.email,
+            reason=reason if reason else "Удален администратором"
+        )
+        db.session.add(deleted)
+        db.session.delete(user)
+        db.session.commit()
+        services.add_log(f"удалил аккаунт ID={user.id}")
+        return True, "Пользователь успешно удалён.", "success"
+    except Exception as ex:
+        db.session.rollback()
+        print(ex)
+        return False, f"Ошибка при удалении аккаунта: {ex}", "danger"

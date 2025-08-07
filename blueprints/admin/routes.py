@@ -9,12 +9,22 @@ def dashboard():
 
 @admin.route("/users")
 def users():
+    page = request.args.get("page", 1, type=int)
     return render_template(
         "admin/users.html",
-        users = services.get_all_users(),
+        users = services.get_users_paginated(page),
         stats = services.get_users_stats(),
         groups = services.get_all_privileges_groups(to_dict=True)
     )
+
+@admin.route("/users/deleted")
+def users_deleted():
+    page = request.args.get("page", 1, type=int)
+    return render_template(
+        "admin/users_deleted.html",
+        users = services.get_users_deleted_paginated(page)
+    )
+
 
 @admin.route("/user/edit", methods=["GET", "POST"])
 def edit_user():
@@ -38,6 +48,18 @@ def edit_user():
         form = form,
         groups = services.get_all_privileges_groups()
     )
+
+@admin.route("/user/delete", methods=["POST"])
+def delete_user():
+    reason = request.form.get('reason', type=str, default=None)
+    success, message, category = services.delete_user(int(request.args['id']), reason)
+
+    if not success:
+        flash(message, category)
+        return redirect(url_for('admin.users'))
+
+    flash(message, category)
+    return redirect(url_for('admin.users'))
 
 @admin.route("/user/ban")
 def user_manage_ban():
@@ -180,3 +202,26 @@ def privileges_groups_delete():
 
     flash(message, category)
     return redirect(url_for('admin.privileges_groups'))
+
+@admin.route("/cryptocurrencies")
+def cryptocurrencies():
+    page = request.args.get("page", 1, type=int)
+    return render_template(
+        "admin/cryptocurrencies.html",
+        cryptocurrencies = services.get_cryptocurrencies_paginated(page)
+    )
+
+@admin.route("/cryptocurrencies/load")
+def cryptocurrencies_load():
+    message, category = services.load_cryptocurrencies()
+
+    flash(message, category)
+    return redirect(url_for("admin.cryptocurrencies"))
+
+@admin.route("/logs")
+def logs():
+    page = request.args.get("page", 1, type=int)
+    return render_template(
+        "admin/logs.html",
+        logs = services.get_logs_paginated(page),
+    )
