@@ -1,3 +1,13 @@
+from .cryptocurrencies import (
+    get_all_cryptocurrencies,
+    get_cryptocurrencies_paginated,
+    load_cryptocurrencies
+)
+from .logs import (
+    get_all_logs,
+    get_logs_paginated,
+    add_log
+)
 from .privileges import (
     get_all_privileges_groups,
     get_privileges_groups_by_id,
@@ -7,9 +17,12 @@ from .privileges import (
 )
 from .users import (
     get_all_users,
+    get_users_paginated,
+    get_users_deleted_paginated,
     get_users_stats,
     get_user_by_id,
     update_user,
+    delete_user,
 
     ban_user,
     unban_user,
@@ -20,6 +33,16 @@ from .users import (
 )
 
 __all__ = [
+    # CryptoCurrencies
+    "get_all_cryptocurrencies",
+    "get_cryptocurrencies_paginated",
+    "load_cryptocurrencies",
+
+    # Logs
+    "get_all_logs",
+    "get_logs_paginated",
+    "add_log",
+
     # Privileges Groups
     "get_all_privileges_groups",
     "get_privileges_groups_by_id",
@@ -29,9 +52,12 @@ __all__ = [
 
     # Users
     "get_all_users",
+    "get_users_paginated",
+    "get_users_deleted_paginated",
     "get_users_stats",
     "get_user_by_id",
     "update_user",
+    "delete_user",
     "ban_user",
     "unban_user",
     "restrict_user",
