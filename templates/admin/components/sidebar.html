@@ -1,42 +1,71 @@
 <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
   <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="sidebarMenuLabel"><b>V</b>irtual <b>C</b>rypto <b>M</b>ining <b>A</b>dmin <b>P</b>anel</h5>
+      <h5 class="offcanvas-title" id="sidebarMenuLabel">
+        <i class="fa-solid fa-coins"></i>
+        <span>VCM Admin</span>
+      </h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
+
+      <h6 class="sidebar-heading px-3 mb-1 text-body-secondary text-uppercase">Основное</h6>
       <ul class="nav flex-column">
         <li class="nav-item">
-          <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('admin.dashboard') }}">
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.endpoint == 'admin.dashboard' %}active{% endif %}" href="{{ url_for('admin.dashboard') }}">
             <i class="fa-solid fa-house"></i>
             <span>Главная</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('admin.users') }}">
-            <i class="fa-solid fa-users"></i>
-            <span>Пользователи</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('admin.privileges_groups') }}">
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.endpoint == 'admin.privileges_groups' %}active{% endif %}" href="{{ url_for('admin.privileges_groups') }}">
             <i class="fa-solid fa-layer-group"></i>
             <span>Группы привилегий</span>
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.endpoint == 'admin.cryptocurrencies' %}active{% endif %}" href="{{ url_for('admin.cryptocurrencies', page=1) }}">
+            <i class="fa-solid fa-coins"></i>
+            <span>Криптовалюты</span>
+          </a>
+        </li>
       </ul>
-      <hr class="my-3">
+
+      <h6 class="sidebar-heading px-3 mt-3 mb-1 text-body-secondary text-uppercase">Пользователи</h6>
       <ul class="nav flex-column">
         <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.endpoint == 'admin.users' %}active{% endif %}" href="{{ url_for('admin.users', page=1) }}">
+            <i class="fa-solid fa-users"></i>
+            <span>Все пользователи</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.endpoint == 'admin.users_deleted' %}active{% endif %}" href="{{ url_for('admin.users_deleted', page=1) }}">
+            <i class="fa-solid fa-users-slash"></i>
+            <span>Удаленные</span>
+          </a>
+        </li>
+      </ul>
+      <hr class="my-3">
+
+      <h6 class="sidebar-heading px-3 mb-2 text-body-secondary text-uppercase">Прочее</h6>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-2 {% if request.endpoint == 'admin.logs' %}active{% endif %}" href="{{ url_for('admin.logs', page=1) }}">
+            <i class="fa-solid fa-clipboard-list"></i>
+            <span>Журнал событий</span>
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link d-flex align-items-center gap-2" href="#">
-            <i class="fa-solid fa-cog"></i>
-            <span>Настройки</span>
+            <i class="fa-solid fa-gear"></i>
+            <span>Настройки сайта</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link d-flex align-items-center gap-2" href="{{ url_for('site.index') }}">
             <i class="fa-solid fa-globe"></i>
-            <span>Вернутся на сайт</span>
+            <span>Вернуться на сайт</span>
           </a>
         </li>
         <li class="nav-item">
