@@ -7,3 +7,4 @@ Flask-WTF
 pycountry
 python-dateutil
 python-dotenv
+requests
