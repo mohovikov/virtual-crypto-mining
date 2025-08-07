@@ -4,13 +4,12 @@ document.addEventListener("DOMContentLoaded", function () {
     new bootstrap.Toast(toastEl).show();
   });
 
-  const timeElements = document.querySelectorAll("time[data-utc]");
+  const timeElements = document.querySelectorAll("time.js-datetime[data-utc]");
 
   timeElements.forEach(el => {
     const utcString = el.dataset.utc;
     if (!utcString) return;
 
-    // Преобразуем в ISO-строку
     const isoString = utcString.replace(" ", "T") + "Z";
     const date = new Date(isoString);
 
@@ -18,9 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
         el.textContent = "Неверная дата";
         return;
     }
-
-    // Устанавливаем атрибут datetime (в формате UTC ISO)
-    el.setAttribute("datetime", date.toISOString());
 
     // Локальное отображение (на экране)
     const options = {
@@ -31,9 +27,33 @@ document.addEventListener("DOMContentLoaded", function () {
         minute: "2-digit",
         second: "2-digit",
     };
-    el.textContent = date.toLocaleString(undefined, options);
+    el.setAttribute("datetime", date.toISOString());
+
+    if (typeof timeAgo !== "undefined") {
+      el.textContent = timeago.format(date, "ru")
+      el.setAttribute("title", date.toLocaleString(undefined, options))
+    } else {
+      el.textContent = date.toLocaleString(undefined, options);
+    }
+  });
+
+  document.querySelectorAll(".js-currency").forEach(el => {
+    const raw = el.dataset.price;
+    el.textContent = formatCurrencyRUB(raw);
   });
 });
+
+function formatCurrencyRUB(value) {
+    if (value === null || value === undefined || isNaN(value)) return '—';
+
+    const number = parseFloat(value);
+    return new Intl.NumberFormat("ru-RU", {
+      style: "currency",
+      currency: "RUB",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(number);
+  }
 
 function updatePrivileges() {
   var result = 0;
