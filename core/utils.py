@@ -1,7 +1,12 @@
+import os
+from pathlib import Path
 from typing import List, Tuple
+from urllib.parse import urlparse
 from flask_login import current_user
 import pycountry
+import requests
 
+from core.config import Config
 from core.constansts.privileges import Privileges
 
 
@@ -93,3 +98,24 @@ def get_country_choices() -> List[Tuple[str, str]]:
         [(country.alpha_2, country.name) for country in countries],
         key=lambda x: x[1]
     )
+
+def download_coin_icon(url: str, coin_name: str) -> str | None:
+    try:
+        Path(Config.ICONS_CRYPTOCURRENCIES_FOLDER).mkdir(parents=True, exist_ok=True)
+        parsed = urlparse(url)
+        ext = os.path.splitext(parsed.path)[-1]
+        safe_name = coin_name.replace(" ", "_")
+        filename = f"{safe_name}{ext}"
+        file_path = os.path.join(Config.ICONS_CRYPTOCURRENCIES_FOLDER, filename)
+
+        # Пропускаем, если уже скачан
+        if not os.path.exists(file_path):
+            r = requests.get(url, timeout=10)
+            r.raise_for_status()
+            with open(file_path, "wb") as f:
+                f.write(r.content)
+
+        return filename
+    except Exception as e:
+        print(f"Ошибка загрузки иконки для {coin_name}: {e}")
+        return None
