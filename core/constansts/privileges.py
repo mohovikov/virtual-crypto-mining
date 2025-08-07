@@ -18,3 +18,4 @@ class Privileges(IntEnum):
     ADMIN_MANAGE_PRIVILEGES = 2 << 11
     ADMIN_KICK_USERS = 2 << 12
     ADMIN_MANAGE_SETTINGS = 2 << 13
+    ADMIN_DELETE_ACCOUNT = 2 << 14
