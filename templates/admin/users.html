@@ -71,6 +71,20 @@
   </div>
 </div>
 
+<div class="text-center mb-3">
+  <h5>Быстрое редактирование</h5>
+  <div class="btn-group">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#quickSearchByUsernameModal">
+      <i class="fa-solid fa-user"></i>
+      <span>По имени</span>
+    </button>
+    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#quickSearchByEmailModal">
+      <i class="fa-solid fa-envelope"></i>
+      <span>По email</span>
+    </button>
+  </div>
+</div>
+
 <div class="table-responsive-md">
   <table class="table table-striped align-middle text-center">
     <thead>
@@ -123,7 +137,7 @@
         </td>
         <td>TODO</td>
         <td>
-          <time id="created_at" data-utc="{{ user.created_at }}"></time>
+          <time class="js-datetime" data-utc="{{ user.created_at }}"></time>
         </td>
         {% if has_privilege(Privileges.ADMIN_MANAGE_USERS) %}
         <td>
@@ -156,6 +170,47 @@
       </tr>
       {% endfor %}
     </tbody>
-  </table>  
+  </table>
 </div>
+
+<nav aria-label="Навигация пользователей">
+  <ul class="pagination justify-content-center">
+    {% if users.has_prev %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('admin.users', page=users.prev_num) }}">&laquo;</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">&laquo;</span>
+      </li>
+    {% endif %}
+
+    {% for page_num in users.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if page_num %}
+        {% if page_num == users.page %}
+          <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
+          </li>
+        {% endif %}
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if users.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('admin.users', page=users.next_num) }}">&raquo;</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">&raquo;</span>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+
+{% include 'admin/components/modals/quick_search_by_username.html' %}
+{% include 'admin/components/modals/quick_search_by_email.html' %}
 {% endblock %}

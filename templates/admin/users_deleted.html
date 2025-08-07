@@ -1,0 +1,85 @@
+{% extends 'layouts/admin.html' %}
+
+{% set title = "Удаленные аккаунты" %}
+
+{% block content %}
+<h2 class="text-center pb-3 mb-3 border-bottom">
+  <i class="fa-solid fa-users-slash"></i>
+  <span>{{ title }}</span>
+</h2>
+
+<table class="table table-striped w-75 mx-auto align-middle text-center">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Имя пользователя</th>
+      <th scope="col">Email</th>
+      <th scope="col">Причина удаления</th>
+      <th scope="col">Дата удаления</th>
+      <th scope="col">Действия</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <th scope="col">{{ user.id }}</th>
+      <td><b>{{ user.username }}</b></td>
+      <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+      <td>{{ user.reason }}</td>
+      <td>
+        <time class="js-datetime" data-utc="{{ user.deleted_at }}"></time>
+      </td>
+      <td>
+        <div class="btn-group btn-group-sm">
+          <a href="#" class="btn btn-success" title="Удалить пользователя">
+            <i class="fa-solid fa-trash"></i>
+          </a>
+        </div>
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="2">Пока пусто...</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<nav aria-label="Навигация удаленных пользователей">
+  <ul class="pagination justify-content-center">
+    {% if users.has_prev %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('admin.users_deleted', page=users.prev_num) }}">&laquo;</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">&laquo;</span>
+      </li>
+    {% endif %}
+
+    {% for page_num in users.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if page_num %}
+        {% if page_num == users.page %}
+          <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('admin.users_deleted', page=page_num) }}">{{ page_num }}</a>
+          </li>
+        {% endif %}
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if users.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('admin.users_deleted', page=users.next_num) }}">&raquo;</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">&raquo;</span>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}

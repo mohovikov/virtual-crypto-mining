@@ -135,18 +135,6 @@
       <div class="card-body">
         <div class="list-group">
           <a href="#" class="list-group-item list-group-item-action list-group-item-primary">Профиль пользователя</a>
-          {% if is_banned(user.privileges) %}
-          <a href="{{ url_for('admin.user_manage_ban', action="remove", id=user.id, next=url_for('admin.edit_user', id=user.id)) }}" class="list-group-item list-group-item-action list-group-item-success">Разбанить пользователя</a>
-          {% else %}
-          <a href="{{ url_for('admin.user_manage_ban', action="add", id=user.id, next=url_for('admin.edit_user', id=user.id)) }}" class="list-group-item list-group-item-action list-group-item-warning">Забанить пользователя</a>
-          {% endif %}
-
-          {% if is_restricted(user.privileges) %}
-          <a href="{{ url_for('admin.user_manage_restrict', action="remove", id=user.id, next=url_for('admin.edit_user', id=user.id)) }}" class="list-group-item list-group-item-action list-group-item-success">Снять ограничения пользователя</a>
-          {% else %}
-          <a href="{{ url_for('admin.user_manage_restrict', action="add", id=user.id, next=url_for('admin.edit_user', id=user.id)) }}" class="list-group-item list-group-item-action list-group-item-warning">Ограничить пользователя</a>
-          {% endif %}
-
           <a href="{{ url_for('admin.user_give_support', id=user.id) }}" class="list-group-item list-group-item-action list-group-item-success">Выдать "Спонсора"</a>
           {% if has_privilege(user.privileges, Privileges.USER_SPONSOR) %}
           <button type="button" class="list-group-item list-group-item-action list-group-item-warning" data-bs-toggle="modal" data-bs-target="#modalRemoveSponsor">Снять "Спонсора"</button>
@@ -158,10 +146,27 @@
   <div class="col-12 col-md-6">
     <div class="card">
       <h5 class="card-header">Опасная зона</h5>
-      <div class="card-body"></div>
+      <div class="card-body">
+        <div class="list-group">
+          {% if is_banned(user.privileges) %}
+          <a href="{{ url_for('admin.user_manage_ban', action="remove", id=user.id, next=url_for('admin.edit_user', id=user.id)) }}" class="list-group-item list-group-item-action list-group-item-danger">Разбанить пользователя</a>
+          {% else %}
+          <a href="{{ url_for('admin.user_manage_ban', action="add", id=user.id, next=url_for('admin.edit_user', id=user.id)) }}" class="list-group-item list-group-item-action list-group-item-danger">Забанить пользователя</a>
+          {% endif %}
+
+          {% if is_restricted(user.privileges) %}
+          <a href="{{ url_for('admin.user_manage_restrict', action="remove", id=user.id, next=url_for('admin.edit_user', id=user.id)) }}" class="list-group-item list-group-item-action list-group-item-danger">Снять ограничения пользователя</a>
+          {% else %}
+          <a href="{{ url_for('admin.user_manage_restrict', action="add", id=user.id, next=url_for('admin.edit_user', id=user.id)) }}" class="list-group-item list-group-item-action list-group-item-danger">Ограничить пользователя</a>
+          {% endif %}
+          <a href="#" class="list-group-item list-group-item-action list-group-item-danger text-uppercase fw-bold" data-bs-toggle="modal" data-bs-target="#modalDeleteAccount">Удалить аккаунт</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+{% include 'admin/components/modals/delete_account.html' %}
 
 {% if has_privilege(user.privileges, Privileges.USER_SPONSOR) %}
 <div class="modal fade" id="modalRemoveSponsor" tabindex="-1" aria-hidden="true">
