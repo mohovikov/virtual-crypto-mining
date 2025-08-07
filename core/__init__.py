@@ -1,4 +1,5 @@
-from flask import Flask
+from dotenv import load_dotenv, find_dotenv
+from flask import Flask, send_from_directory
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -12,6 +13,7 @@ migrate = Migrate()
 
 
 def create_app() -> Flask:
+    load_dotenv(find_dotenv())
     app = Flask(
         import_name=__name__,
         template_folder=Config.TEMPLATE_FOLDER,
@@ -41,6 +43,10 @@ def create_app() -> Flask:
             privileges_groups=utils.get_privileges_checklist,
             Privileges=Privileges
         )
+    
+    @app.route('/media/<path:filename>')
+    def media(filename):
+        return send_from_directory(app.config['MEDIA_FOLDER'], filename)
 
     from blueprints.admin import admin
     app.register_blueprint(admin)
