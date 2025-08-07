@@ -1,0 +1,35 @@
+<div class="modal fade" id="modalDeleteAccount" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered justify-content-center">
+    <form action="{{ url_for('admin.delete_user', id=user.id) }}" method="post">
+      <div class="modal-content shadow rounded-0 rounded-top">
+        <div class="modal-body p-4 text-center">
+          <h3 class="text-danger mb-3">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+            <span>Подтверждение удаления аккаунта</span>
+          </h3>
+          <p class="mb-3 fw-bold text-danger">
+            ⚠️ Вы собираетесь <strong>уничтожить аккаунт</strong> пользователя <strong>{{ user.username }}</strong>.
+          </p>
+          <p class="mb-3">Это <strong>административное удаление</strong> — крайняя и <u>необратимая</u> мера:</p>
+          <ul class="text-start list-unstyled mb-3 small">
+            <li>• Все накопленные криптовалюты, достижения и привилегии будут <strong>уничтожены</strong>.</li>
+            <li>• Аккаунт будет <strong>безвозвратно удалён</strong> из системы.</li>
+            <li>• Восстановление будет невозможно — <u>даже через поддержку</u>.</li>
+            <li>• Никнейм, Email пользователя будут <u>заблокированы навсегда</u> .</li>
+          </ul>
+          <p class="mb-3 text-danger fw-bold">🔥 Это цифровая казнь. Вы уверены, что хотите продолжить?</p>
+          <input class="form-control" type="text" name="reason" placeholder="Причина удаления аккаунта" aria-label="Причина удаления аккаунта" aria-describedby="deletedAccountHelp">
+          <div id="deletedAccountHelp" class="form-text text-start">Оставьте поле пустым, если удаляете аккаунт без причины</div>
+        </div>
+        <div class="modal-footer flex-nowrap p-0">
+          <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal">
+            Отмена
+          </button>
+          <button type="submit" class="btn btn-lg btn-danger fs-6 text-decoration-none col-6 py-3 m-0 rounded-0">
+            <strong>Удалить аккаунт</strong>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
