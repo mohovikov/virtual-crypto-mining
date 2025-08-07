@@ -1,0 +1,100 @@
+{% extends 'layouts/admin.html' %}
+
+{% set title = "Криптовалюты" %}
+
+{% block content %}
+<h2 class="text-center pb-3 mb-3 border-bottom">
+  <i class="fa-solid fa-coins"></i>
+  <span>{{ title }}</span>
+</h2>
+
+<div class="text-center mb-3">
+  <a href="{{ url_for('admin.cryptocurrencies_load') }}" class="btn btn-primary">Загрузить данные</a>
+  <a href="#" class="btn btn-info">Обновить стоимость монет</a>
+</div>
+
+<table class="table table-striped w-75 mx-auto align-middle text-center">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">CMC Coin ID</th>
+      <th scope="col">Название</th>
+      <th scope="col">Символ</th>
+      <th scope="col">Стоимость</th>
+      <th scope="col">Дата создания</th>
+      <th scope="col">Дата обновления</th>
+      <th scope="col">Действия</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for cryptocurrency in cryptocurrencies %}
+    <tr>
+      <th scope="col">{{ cryptocurrency.id }}</th>
+      <th scope="col">{{ cryptocurrency.cid }}</th>
+      <td>
+        <div class="d-flex align-items-center justify-content-center">
+          <img src="{{ url_for('media', filename="coins/" ~ cryptocurrency.icon_name) }}" alt="{{ cryptocurrency.symbol }}" width="24" height="24" class="me-1">
+          <span class="fw-bold">{{ cryptocurrency.name }}</span>
+        </div>
+      </td>
+      <td>{{ cryptocurrency.symbol }}</td>
+      <td><span class="js-currency" data-price="{{ cryptocurrency.price }}"></span></td>
+      <td><time class="js-datetime" data-utc="{{ cryptocurrency.created_at }}"></time></td>
+      <td><time class="js-datetime" data-utc="{{ cryptocurrency.updated_at }}"></time></td>
+      <td>
+        <div class="btn-group btn-group-sm">
+          <a href="#" class="btn btn-primary" title="Редактировать монету">
+            <i class="fa-solid fa-pencil"></i>
+          </a>
+          <a href="#" class="btn btn-info" title="Обновить курс">
+            <i class="fa-solid fa-rotate"></i>
+          </a>
+        </div>
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="6">Пока пусто...</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<nav aria-label="Навигация пользователей">
+  <ul class="pagination justify-content-center">
+    {% if cryptocurrencies.has_prev %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('admin.cryptocurrencies', page=cryptocurrencies.prev_num) }}">&laquo;</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">&laquo;</span>
+      </li>
+    {% endif %}
+
+    {% for page_num in cryptocurrencies.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if page_num %}
+        {% if page_num == cryptocurrencies.page %}
+          <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('admin.cryptocurrencies', page=page_num) }}">{{ page_num }}</a>
+          </li>
+        {% endif %}
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if cryptocurrencies.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('admin.cryptocurrencies', page=cryptocurrencies.next_num) }}">&raquo;</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">&raquo;</span>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}
