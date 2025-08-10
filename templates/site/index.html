@@ -1,0 +1,8 @@
+{% extends 'layouts/site.html' %}
+
+{% set title = "Главная" %}
+
+{% block content %}
+<h1>Главная страница</h1>
+<a href="{{ url_for('admin.dashboard') }}">Админпанель</a>
+{% endblock %}

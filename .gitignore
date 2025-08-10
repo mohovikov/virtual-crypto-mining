@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environment
+venv/
+.venv/
+env/
+.env/
+*.env
+
+# Flask / Instance folder
+instance/
+*.db
+*.sqlite3
+
+# Migrations cache
+migrations/__pycache__/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.vscode/
+.idea/
+
+# Media uploads
+media/*
+
+# Но оставляем пустую папку media
+!media/.gitkeep
+
+# Cache
+.cache/

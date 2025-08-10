@@ -1,0 +1,6 @@
+Flask
+Flask-APScheduler
+Flask-Migrate
+Flask-Redis
+Flask-SQLAlchemy
+Flask-WTF
