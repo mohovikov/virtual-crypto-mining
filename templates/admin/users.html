@@ -2,6 +2,13 @@
 
 {% set title = "Пользователи" %}
 
+{% set needed_privs = [
+  Privileges.ADMIN_EDIT_USERS,
+  Privileges.ADMIN_RESTRICT_USERS,
+  Privileges.ADMIN_BAN_USERS,
+  Privileges.ADMIN_LOCK_USERS
+] %}
+
 {% block content %}
 <h2 class="pb-3 mb-3 text-center border-bottom">
   <i class="fa-solid fa-users"></i>
@@ -16,7 +23,7 @@
       <th scope="col">Группа</th>
       <th scope="col">Статус</th>
       <th scope="col">Дата регистрации</th>
-      {% if has_privilege(Privileges.ADMIN_MANAGE_USERS) %}
+      {% if has_any_privilege(needed_privs) %}
       <th scope="col">Действия</th>
       {% endif %}
     </tr>
@@ -44,12 +51,52 @@
       <td>
         <time class="js-datetime" data-utc="{{ user.register_at }}">{{ user.register_at }}</time>
       </td>
+      {% if has_any_privilege(needed_privs) %}
       <td>
         <div class="btn-group btn-group-sm">
+          {% if has_privilege(Privileges.ADMIN_EDIT_USERS) %}
           <a href="#" class="btn btn-primary" title="Редактировать">
             <i class="fa-solid fa-pencil"></i>
           </a>
+          {% endif %}
+
+          {% if has_privilege(Privileges.ADMIN_RESTRICT_USERS) %}
+            {% if is_restricted(user.privileges) %}
+            <a href="/users/{{ user.id }}/unrestrict" class="btn btn-sm btn-success" title="Снять ограничения">
+              <i class="fas fa-user-check"></i>
+            </a>
+            {% else %}
+            <a href="/users/{{ user.id }}/restrict" class="btn btn-sm btn-info" title="Ограничить пользователя">
+              <i class="fas fa-user-slash"></i>
+            </a>
+            {% endif %}
+          {% endif %}
+
+          {% if has_privilege(Privileges.ADMIN_BAN_USERS) %}
+            {% if is_banned(user.privileges) %}
+            <a href="/users/{{ user.id }}/unban" class="btn btn-sm btn-success" title="Разбанить пользователя">
+              <i class="fas fa-check"></i>
+            </a>
+            {% else %}
+            <a href="/users/{{ user.id }}/ban" class="btn btn-sm btn-warning" title="Забанить пользователя">
+              <i class="fas fa-ban"></i>
+            </a>
+            {% endif %}
+          {% endif %}
+
+          {% if has_privilege(Privileges.ADMIN_LOCK_USERS) %}
+            {% if is_locked(user.privileges) %}
+            <a href="/users/{{ user.id }}/unlock" class="btn btn-sm btn-success" title="Разблокировать пользователя">
+              <i class="fas fa-unlock"></i>
+            </a>
+            {% else %}
+            <a href="/users/{{ user.id }}/lock" class="btn btn-sm btn-danger" title="Заблокировать пользователя">
+              <i class="fas fa-lock"></i>
+            </a>
+            {% endif %}
+          {% endif %}
         </div>
+        {% endif %}
       </td>
     </tr>
     {% endfor %}
