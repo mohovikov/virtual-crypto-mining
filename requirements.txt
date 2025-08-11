@@ -5,3 +5,4 @@ Flask-Migrate
 Flask-Redis
 Flask-SQLAlchemy
 Flask-WTF
+python-dotenv
