@@ -14,6 +14,9 @@ def create_app() -> Flask:
     app.config.from_object(Config)
     db.init_app(app)
     migrate.init_app(app, db)
+
+    from app.models import Users
+
     redis_client.init_app(app)
     scheduler.init_app(app)
     scheduler.start()
