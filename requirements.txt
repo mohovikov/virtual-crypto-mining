@@ -1,5 +1,7 @@
+email-validator
 Flask
 Flask-APScheduler
+Flask-Bcrypt
 Flask-Login
 Flask-Migrate
 Flask-Redis
