@@ -1,6 +1,6 @@
 from flask import Flask
 
-from app.extensions import db, migrate, redis_client, scheduler
+from app.extensions import db, migrate, redis_client, scheduler, login_manager, bcrypt
 from app.config import Config
 
 
@@ -17,6 +17,8 @@ def create_app() -> Flask:
 
     from app.models import Users
 
+    bcrypt.init_app(app)
+    login_manager.init_app(app)
     redis_client.init_app(app)
     scheduler.init_app(app)
     scheduler.start()
