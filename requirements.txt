@@ -1,5 +1,6 @@
 Flask
 Flask-APScheduler
+Flask-Login
 Flask-Migrate
 Flask-Redis
 Flask-SQLAlchemy
