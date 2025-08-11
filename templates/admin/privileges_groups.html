@@ -1,0 +1,67 @@
+{% extends 'layouts/admin.html' %}
+
+{% set title = "Группы привилегий" %}
+
+{% block content %}
+<h2 class="pb-3 mb-3 text-center border-bottom">
+  <i class="fa-solid fa-layer-group"></i>
+  <span>{{ title }}</span>
+</h2>
+<table class="table table-striped align-middle w-75 mx-auto text-center">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Название</th>
+      <th scope="col">Значение привилегии</th>
+      <th scope="col">Дата добавления</td>
+      <th scope="col">Дата обновления</td>
+      <th scope="col">Действия</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for group in groups %}
+    <tr>
+      <th scope="col">{{ group.id }}</th>
+      {% if group.color_class %}
+      <td>
+        <span class="badge text-bg-{{ group.color_class }}">{{ group.name }}</span>
+      </td>
+      {% else %}
+      <td>{{ group.name }}</td>
+      {% endif %}
+      <td>{{ group.privileges }}</td>
+      <td>
+        <time class="js-datetime" data-utc="{{ group.created_at }}">{{ group.created_at }}</time>
+      </td>
+      <td>
+        <time class="js-datetime" data-utc="{{ group.updated_at }}">{{ group.updated_at }}</time>
+      </td>
+      <td>
+        <div class="btn-group btn-group-sm">
+          <a href="#" class="btn btn-primary" title="Редактировать">
+            <i class="fa-solid fa-pencil"></i>
+          </a>
+        </div>
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="6">
+        <div class="alert alert-info mb-0" role="alert">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>На данный момент нету ни одной группы привилегий...</span>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="6">
+        <a href="{{ url_for('admin.privileges_groups_add') }}" class="btn btn-sm btn-primary">
+          <i class="fa-solid fa-plus"></i>
+          <span>Добавить новую группу</span>
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'layouts/admin.html' %}
+
+{% set title = "Группы привилегий" %}
+
+{% block content %}
+<h2 class="pb-3 mb-3 text-center border-bottom">
+  <i class="fa-solid fa-layer-group"></i>
+  <span>{{ title }}</span>
+</h2>
+
+<form action="{{ url_for('admin.privileges_groups_add') }}" method="post">
+  {{ form.csrf_token() }}
+  <table class="table table-striped align-middle w-75 mx-auto">
+    <tbody>
+      <tr>
+        <td>{{ form.name.label() }}</td>
+        <td>{{ form.name(class="form-control") }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.color_class.label() }}</td>
+        <td>
+          <select name="{{ form.color_class.name }}" id="{{ form.color_class.name }}" class="form-select">
+            {% for color, text in form.color_class.choices %}
+            <option value="{{ color }}">{{ text }} ({{ color }})</option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Привилегии</td>
+        <td>
+          <ul class="list-group">
+          {% for privilege in get_privileges(3) %}
+          <li class="list-group-item">
+            <input
+              class="form-check-input me-1"
+              type="checkbox"
+              value="{{ privilege.value }}"
+              name="privilege"
+              id="{{ privilege.name }}"
+              {% if privilege.checked %}checked{% endif %}
+              {% if privilege.disabled %}disabled{% endif %}
+              onclick="updatePrivileges()"
+            >
+            <label class="form-check-label" for="{{ privilege.name }}">{{ privilege.name }}</label>
+          </li>
+          {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>{{ form.privileges_value.label() }}</td>
+        <td>{{ form.privileges_value(class="form-control") }}</td>
+      </tr>
+      <tr class="text-center">
+        <td colspan="2">{{ form.submit(class="btn btn-sm btn-primary") }}</td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename="js/privileges.js") }}"></script>
+{% endblock %}
