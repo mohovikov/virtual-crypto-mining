@@ -29,7 +29,14 @@
       <td>
         <a href="mailto:{{ user.email }}">{{ user.email }}</a>
       </td>
-      <td>TODO</td>
+      <td>
+        {% set group = get_privilege_group(user.privileges) %}
+        {% if group %}
+        <span class="badge text-bg-{{ group.color_class }}">{{ group.name }}</span>
+        {% else %}
+        <span class="badge text-bg-danger">Неизвестно ({{ user.privileges }})</span>
+        {% endif %}
+      </td>
       <td>
         {% set text, color = check_user_status(user.privileges) %}
         <span class="badge text-bg-{{ color }}">{{ text }}</span>
