@@ -1,21 +1,20 @@
-from app import p
 from app.models.privileges_groups import PrivilegesGroups
-from app.privileges import Privileges
+from app import privileges as priv
 
 
 def check_user_status(privileges: int) -> tuple[str, str]:
-    if p.is_locked(privileges):
+    if priv.is_locked(privileges):
         return "Заблокирован", "dark"
-    elif p.is_banned(privileges):
+    elif priv.is_banned(privileges):
         return "Забанен", "danger"
-    elif p.is_restricted(privileges):
+    elif priv.is_restricted(privileges):
         return "Ограничен", "warning"
     else:
         return "OK!", "success"
 
 def get_privileges(user_privileges: int) -> list[dict]:
     result = []
-    for name, privilege in Privileges.__members__.items():
+    for name, privilege in priv.Privileges.__members__.items():
         if privilege.value <= 0:
             continue
         result.append({
