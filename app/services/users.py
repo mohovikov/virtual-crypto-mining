@@ -27,3 +27,8 @@ def login_user(form: LoginForm):
         return user, f"С возвращением, {user.username}", "success"
 
     return None, "Неверные имя пользователя и пароль.", "danger"
+
+def get_all_users(page: int):
+    return Users.query.order_by(Users.id.asc()).paginate(
+        page=page, per_page=50, error_out=False
+    )
