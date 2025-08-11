@@ -1,7 +1,7 @@
 from flask import Flask
 
 from app import privileges as p
-from app.helpers import check_user_status
+from app.helpers import check_user_status, get_privileges, get_privilege_group
 from app.extensions import db, migrate, redis_client, scheduler, login_manager, bcrypt
 from app.config import Config
 
@@ -20,7 +20,9 @@ def create_app() -> Flask:
             has_privilege=p.has_privilege,
             is_restricted=p.is_restricted,
             is_banned=p.is_banned,
-            check_user_status=check_user_status
+            check_user_status=check_user_status,
+            get_privileges=get_privileges,
+            get_privilege_group=get_privilege_group
         )
 
     app.config.from_object(Config)
