@@ -18,6 +18,15 @@
           <span>{{ current_user.username }}</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-end position-absolute mt-2">
+          <li class="text-center">
+            {% set group = get_privilege_group(current_user.privileges) %}
+            {% if group %}
+            <span class="badge text-bg-{{ group.color_class }}">{{ group.name }}</span>
+            {% else %}
+            <span class="badge text-bg-danger">Неизвестно ({{ user.privileges }})</span>
+            {% endif %}
+          </li>
+          <li><hr class="dropdown-divider"></li>
           <li>
             <a class="dropdown-item" href="#">
               <i class="fa-solid fa-user"></i>
