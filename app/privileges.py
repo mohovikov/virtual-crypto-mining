@@ -18,8 +18,8 @@ def has_privilege(privileges: Privileges, user_privileges: int = -1) -> bool:
 
     return privileges & user_privileges != 0
 
-def is_banned(privileges: int = -1) -> bool:
-    """Бан: нет PUBLIC и нет NORMAL."""
+def is_locked(privileges: int = -1) -> bool:
+    """Заблокирован: нет PUBLIC и нет NORMAL."""
     return (
         not has_privilege(Privileges.USER_PUBLIC, privileges)
         and not has_privilege(Privileges.USER_NORMAL, privileges)
@@ -32,8 +32,8 @@ def is_restricted(privileges: int = -1) -> bool:
         and has_privilege(Privileges.USER_NORMAL, privileges)
     )
 
-def is_locked(privileges: int = -1) -> bool:
-    """Блокировка: есть PUBLIC, но нет NORMAL."""
+def is_banned(privileges: int = -1) -> bool:
+    """Ограничен: есть PUBLIC, но нет NORMAL."""
     return (
         has_privilege(Privileges.USER_PUBLIC, privileges)
         and not has_privilege(Privileges.USER_NORMAL, privileges)
