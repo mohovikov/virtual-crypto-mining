@@ -1,0 +1,51 @@
+{% extends 'layouts/admin.html' %}
+
+{% set title = "Пользователи" %}
+
+{% block content %}
+<h2 class="pb-3 mb-3 text-center border-bottom">
+  <i class="fa-solid fa-users"></i>
+  <span>{{ title }}</span>
+</h2>
+<table class="table table-striped align-middle text-center">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Имя пользователя</th>
+      <th scope="col">Электронная почта</th>
+      <th scope="col">Группа</th>
+      <th scope="col">Статус</th>
+      <th scope="col">Дата регистрации</th>
+      {% if has_privilege(Privileges.ADMIN_MANAGE_USERS) %}
+      <th scope="col">Действия</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <th scope="col">{{ user.id }}</th>
+      <td><b>{{ user.username }}</b></td>
+      <td>
+        <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+      </td>
+      <td>TODO</td>
+      <td>
+        {% set text, color = check_user_status(user.privileges) %}
+        <span class="badge text-bg-{{ color }}">{{ text }}</span>
+      </td>
+      <td>
+        <time class="js-datetime" data-utc="{{ user.register_at }}">{{ user.register_at }}</time>
+      </td>
+      <td>
+        <div class="btn-group btn-group-sm">
+          <a href="#" class="btn btn-primary" title="Редактировать">
+            <i class="fa-solid fa-pencil"></i>
+          </a>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
