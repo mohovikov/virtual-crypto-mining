@@ -16,6 +16,43 @@ def users():
         users = services.get_all_users(request.args.get("id", type=int, default=1))
     )
 
+@admin.route("/user/edit", methods=["GET", "POST"])
+def edit_user():
+    user = services.get_user_data(request.args.get('id'))
+    form = forms.EditUserForm()
+    if not user:
+        flash("Пользователя с таким ID не найден", "warning")
+        return redirect(url_for('admin.users'))
+
+    return render_template(
+        "admin/edit_user.html",
+        user = user,
+        form = form
+    )
+
+@admin.route("/user/sponsor/give", methods=["GET", "POST"])
+def give_sponsor():
+    user = services.get_user_data(request.args.get('id'))
+    form = forms.GiveSponsorForm()
+
+    if not user:
+        flash("Пользователя с таким ID не найден", "warning")
+        return redirect(url_for("admin.users"))
+
+    if form.validate_on_submit():
+        success, message, category = services.give_sponsor(form, user)
+        if not success:
+            flash(message, category)
+        flash(message, category)
+        return redirect(url_for('admin.users'))
+
+    return render_template(
+        "admin/give_sponsor.html",
+        user = user,
+        form = form
+    )
+
+
 @admin.route("/privileges-groups")
 def privileges_groups():
     return render_template(
