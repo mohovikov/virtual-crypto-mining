@@ -55,18 +55,18 @@
       <td>
         <div class="btn-group btn-group-sm">
           {% if has_privilege(Privileges.ADMIN_EDIT_USERS) %}
-          <a href="#" class="btn btn-primary" title="Редактировать">
+          <a href="{{ url_for('admin.edit_user', id=user.id) }}" class="btn btn-primary" title="Редактировать">
             <i class="fa-solid fa-pencil"></i>
           </a>
           {% endif %}
 
           {% if has_privilege(Privileges.ADMIN_RESTRICT_USERS) %}
             {% if is_restricted(user.privileges) %}
-            <a href="/users/{{ user.id }}/unrestrict" class="btn btn-sm btn-success" title="Снять ограничения">
+            <a href="#" class="btn btn-success" title="Снять ограничения">
               <i class="fas fa-user-check"></i>
             </a>
             {% else %}
-            <a href="/users/{{ user.id }}/restrict" class="btn btn-sm btn-info" title="Ограничить пользователя">
+            <a href="#" class="btn btn-info" title="Ограничить пользователя">
               <i class="fas fa-user-slash"></i>
             </a>
             {% endif %}
@@ -74,11 +74,11 @@
 
           {% if has_privilege(Privileges.ADMIN_BAN_USERS) %}
             {% if is_banned(user.privileges) %}
-            <a href="/users/{{ user.id }}/unban" class="btn btn-sm btn-success" title="Разбанить пользователя">
+            <a href="#" class="btn btn-success" title="Разбанить пользователя">
               <i class="fas fa-check"></i>
             </a>
             {% else %}
-            <a href="/users/{{ user.id }}/ban" class="btn btn-sm btn-warning" title="Забанить пользователя">
+            <a href="#" class="btn btn-warning" title="Забанить пользователя">
               <i class="fas fa-ban"></i>
             </a>
             {% endif %}
@@ -86,18 +86,18 @@
 
           {% if has_privilege(Privileges.ADMIN_LOCK_USERS) %}
             {% if is_locked(user.privileges) %}
-            <a href="/users/{{ user.id }}/unlock" class="btn btn-sm btn-success" title="Разблокировать пользователя">
+            <a href="#" class="btn btn-success" title="Разблокировать пользователя">
               <i class="fas fa-unlock"></i>
             </a>
             {% else %}
-            <a href="/users/{{ user.id }}/lock" class="btn btn-sm btn-danger" title="Заблокировать пользователя">
+            <a href="#" class="btn btn-danger" title="Заблокировать пользователя">
               <i class="fas fa-lock"></i>
             </a>
             {% endif %}
           {% endif %}
         </div>
-        {% endif %}
       </td>
+      {% endif %}
     </tr>
     {% endfor %}
   </tbody>
