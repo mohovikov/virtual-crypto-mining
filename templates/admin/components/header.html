@@ -23,7 +23,7 @@
             {% if group %}
             <span class="badge text-bg-{{ group.color_class }}">{{ group.name }}</span>
             {% else %}
-            <span class="badge text-bg-danger">Неизвестно ({{ user.privileges }})</span>
+            <span class="badge text-bg-danger">Неизвестно ({{ current_user.privileges }})</span>
             {% endif %}
           </li>
           <li><hr class="dropdown-divider"></li>
