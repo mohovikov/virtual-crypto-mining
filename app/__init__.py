@@ -23,7 +23,8 @@ def create_app() -> Flask:
             is_locked=privileges.is_locked,
             check_user_status=helpers.check_user_status,
             get_privileges=helpers.get_privileges,
-            get_privilege_group=helpers.get_privilege_group
+            get_privilege_group=helpers.get_privilege_group,
+            render_privileges_groups=helpers.render_privileges_groups,
         )
 
     app.config.from_object(Config)

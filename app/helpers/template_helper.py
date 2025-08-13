@@ -1,5 +1,5 @@
 from app.models.privileges_groups import PrivilegesGroups
-from app import privileges as priv
+from app import privileges as priv, services
 
 
 def check_user_status(privileges: int) -> tuple[str, str]:
@@ -34,3 +34,13 @@ def get_privilege_group(privileges: int):
             "color_class": group.color_class
         }
     return None
+
+def render_privileges_groups(privileges: int) -> list[dict[str, str]]:
+    groups = []
+    for group in services.get_all_privileges():
+        groups.append({
+            "name": group.name,
+            "privileges": group.privileges,
+            "selected": True if privileges == group.privileges or privileges == (group.privileges | priv.Privileges.USER_SPONSOR) else False
+        })
+    return groups
