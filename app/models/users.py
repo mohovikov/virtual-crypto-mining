@@ -18,13 +18,14 @@ class Users(db.Model, UserMixin):
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     privileges: Mapped[int] = mapped_column(Integer, default=3)
     country: Mapped[str] = mapped_column(CHAR(2), default="XX")
-    support_expire: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=None)
+    sponsor_expire: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=None)
     register_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
-    def __init__(self, username: str, email: str, password_hash: str) -> None:
+    def __init__(self, username: str, email: str, password_hash: str, sponsor_expire: datetime | None = None) -> None:
         self.username = username
         self.email = email
         self.password_hash = password_hash
+        self.sponsor_expire = sponsor_expire
 
 
 @login_manager.user_loader
