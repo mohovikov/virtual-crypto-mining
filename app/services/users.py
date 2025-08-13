@@ -32,3 +32,6 @@ def get_all_users(page: int):
     return Users.query.order_by(Users.id.asc()).paginate(
         page=page, per_page=50, error_out=False
     )
+
+def get_user_data(id):
+    return Users.query.get(id)
