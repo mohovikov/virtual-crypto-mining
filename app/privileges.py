@@ -14,6 +14,8 @@ class Privileges(IntEnum):
     ADMIN_BAN_USERS         = 2 << 5
     ADMIN_LOCK_USERS        = 2 << 6
 
+    ADMIN_MANAGE_PRIVILEGES = 2 << 7
+
 def has_privilege(privileges: Privileges, user_privileges: int = -1) -> bool:
     if user_privileges == -1:
         if current_user.is_anonymous:
