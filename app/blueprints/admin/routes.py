@@ -27,6 +27,7 @@ def edit_user():
     return render_template(
         "admin/edit_user.html",
         user = user,
+        privileges = services.get_all_privileges,
         form = form
     )
 
