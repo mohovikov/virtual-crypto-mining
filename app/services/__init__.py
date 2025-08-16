@@ -1,5 +1,13 @@
+from .clan import (
+    create_clan,
+    get_clan_info,
+    get_user_clan_roles,
+    join_clan,
+    leave_clan
+)
 from .privileges import (
     get_all_privileges,
+    get_privilege_group,
     add_privilege_group
 )
 from .sponsor import (
@@ -13,10 +21,19 @@ from .users import (
 )
 
 __all__ = [
+    # Clans
+    "create_clan",
+    "get_clan_info",
+    "get_user_clan_roles",
+    "join_clan",
+    "leave_clan",
+
     # Privileges Groups
     "get_all_privileges",
+    "get_privilege_group",
     "add_privilege_group",
 
+    # Sponsor
     "give_sponsor",
 
     # Users
