@@ -82,8 +82,8 @@
         <td>
           <select name="privileges-group" id="privileges-group" class="form-select" onchange="groupUpdated();">
             <option value="-1">None</option>
-            {% for privilege in render_privileges_groups(user.privileges) %}
-            <option value="{{ privilege.privileges }}" {% if privilege.selected %}selected{% endif %}>{{ privilege.name }} ({{ privilege.privileges }})</option>
+            {% for privilege in privileges(user.privileges, True) %}
+            <option value="{{ privilege['privileges'] }}" {% if privilege['selected'] %}selected{% endif %}>{{ privilege['name'] }} ({{ privilege['privileges'] }})</option>
             {% endfor %}
           </select>
         </td>

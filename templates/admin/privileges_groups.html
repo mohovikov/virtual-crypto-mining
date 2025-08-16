@@ -7,14 +7,13 @@
   <i class="fa-solid fa-layer-group"></i>
   <span>{{ title }}</span>
 </h2>
-<table class="table table-striped align-middle w-75 mx-auto text-center">
+<table class="table table-striped align-middle w-50 mx-auto text-center">
   <thead>
     <tr>
       <th scope="col">ID</th>
       <th scope="col">Название</th>
       <th scope="col">Значение привилегии</th>
-      <th scope="col">Дата добавления</td>
-      <th scope="col">Дата обновления</td>
+      <th scope="col">Дата добавления<br>Дата обновления</td>
       <th scope="col">Действия</th>
     </tr>
   </thead>
@@ -31,10 +30,10 @@
       {% endif %}
       <td>{{ group.privileges }}</td>
       <td>
-        <time class="js-datetime" data-utc="{{ group.created_at }}">{{ group.created_at }}</time>
-      </td>
-      <td>
-        <time class="js-datetime" data-utc="{{ group.updated_at }}">{{ group.updated_at }}</time>
+        <small>
+          <time class="js-datetime" data-utc="{{ group.created_at }}">{{ group.created_at }}</time><br>
+          <time class="js-datetime" data-utc="{{ group.updated_at }}">{{ group.updated_at }}</time>
+        </small>
       </td>
       <td>
         <div class="btn-group btn-group-sm">
