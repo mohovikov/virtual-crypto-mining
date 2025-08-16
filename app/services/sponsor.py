@@ -3,7 +3,7 @@ from markupsafe import Markup
 from app.extensions import db
 from app.helpers import add_sponsor_time
 from app.models.users import Users
-from app.privileges import Privileges
+from app.constants.privileges import Privileges
 from app.forms.admin_forms import GiveSponsorForm
 
 
