@@ -43,3 +43,9 @@ class LoginForm(FlaskForm):
     )
     remember = BooleanField("Запомнить меня")
     submit = SubmitField("Войти")
+
+class ClanCreateForm(FlaskForm):
+    name = StringField("Название клана", validators=[DataRequired(), Length(max=255)], render_kw={"class": "form-control"})
+    short_name = StringField("Тэг клана", validators=[DataRequired(), Length(max=255)], render_kw={"class": "form-control"})
+    is_open = BooleanField("Открытый набор", default=True)
+    submit = SubmitField("Создать клан", render_kw={"class": "btn btn-sm btn-primary"})
