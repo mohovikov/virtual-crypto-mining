@@ -1,20 +1,19 @@
-from app.models.privileges_groups import PrivilegesGroups
-from app import privileges as priv, services
+from app.constants import Privileges
 
 
 def check_user_status(privileges: int) -> tuple[str, str]:
-    if priv.is_locked(privileges):
+    if Privileges.is_locked(privileges):
         return "Заблокирован", "dark"
-    elif priv.is_banned(privileges):
+    elif Privileges.is_banned(privileges):
         return "Забанен", "danger"
-    elif priv.is_restricted(privileges):
+    elif Privileges.is_restricted(privileges):
         return "Ограничен", "warning"
     else:
         return "OK!", "success"
 
 def get_privileges(user_privileges: int) -> list[dict]:
     result = []
-    for name, privilege in priv.Privileges.__members__.items():
+    for name, privilege in Privileges.__members__.items():
         if privilege.value <= 0:
             continue
         result.append({
@@ -24,23 +23,3 @@ def get_privileges(user_privileges: int) -> list[dict]:
             "disabled": (privilege.value <= 2)
         })
     return result
-
-def get_privilege_group(privileges: int):
-    """Возвращает кортеж (name, color_class) для привилегии, или None если не найдено."""
-    group = PrivilegesGroups.query.filter_by(privileges=privileges).first()
-    if group:
-        return {
-            "name": group.name,
-            "color_class": group.color_class
-        }
-    return None
-
-def render_privileges_groups(privileges: int) -> list[dict[str, str]]:
-    groups = []
-    for group in services.get_all_privileges():
-        groups.append({
-            "name": group.name,
-            "privileges": group.privileges,
-            "selected": True if privileges == group.privileges or privileges == (group.privileges | priv.Privileges.USER_SPONSOR) else False
-        })
-    return groups

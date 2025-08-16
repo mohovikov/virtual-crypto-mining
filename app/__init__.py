@@ -1,6 +1,7 @@
 from flask import Flask
 
-from app import privileges, helpers
+from app import helpers, services
+from app.constants import Privileges
 from app.extensions import db, migrate, redis_client, scheduler, login_manager, bcrypt
 from app.config import Config
 
@@ -15,16 +16,16 @@ def create_app() -> Flask:
     @app.context_processor
     def inject_global():
         return dict(
-            Privileges=privileges.Privileges,
-            has_privilege=privileges.has_privilege,
-            has_any_privilege=privileges.has_any_privilege,
-            is_restricted=privileges.is_restricted,
-            is_banned=privileges.is_banned,
-            is_locked=privileges.is_locked,
+            Privileges=Privileges,
+            has_privilege=Privileges.has_privilege,
+            has_any_privilege=Privileges.has_any_privilege,
+            is_restricted=Privileges.is_restricted,
+            is_banned=Privileges.is_banned,
+            is_locked=Privileges.is_locked,
             check_user_status=helpers.check_user_status,
             get_privileges=helpers.get_privileges,
-            get_privilege_group=helpers.get_privilege_group,
-            render_privileges_groups=helpers.render_privileges_groups,
+            get_clan_link=helpers.get_clan_link,
+            get_privilege_group=services.get_privilege_group
         )
 
     app.config.from_object(Config)
