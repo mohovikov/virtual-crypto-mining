@@ -16,19 +16,13 @@ class ClanMember(db.Model):
 
     user_id: Mapped[int] = mapped_column(
         sa.BigInteger,
-        sa.ForeignKey("users.id", ondelete="CASCADE", name="fk_clanm_user_id"),
-        primary_key=True
+        sa.ForeignKey("users.id", name="fk_clan_members_user_id_users"),
+        primary_key=True,
     )
     clan_id: Mapped[int] = mapped_column(
         sa.BigInteger,
-        sa.ForeignKey("clans.id", ondelete="CASCADE", name="fk_clanm_clan_id"),
-        nullable=False
-    )
-
-    privileges: Mapped[int] = mapped_column(
-        sa.Integer,
+        sa.ForeignKey("clans.id", name="fk_clan_members_clan_id_clans"),
         nullable=False,
-        default=ClanPrivileges.MEMBER
     )
 
     created_at: Mapped[datetime] = mapped_column(
@@ -44,14 +38,13 @@ class ClanMember(db.Model):
     )
 
     # Связи
-    user: Mapped["Users"] = relationship("Users", back_populates="clans_joined")
-    clan: Mapped["Clan"] = relationship("Clan", back_populates="members")
+    clan: Mapped["Clan"] = relationship(back_populates="members")
+    user: Mapped["Users"] = relationship(back_populates="clan_memberships")
 
     __table_args__ = (
-        sa.Index("ix_clanm_clan_id", "clan_id"),  # индекс для clan_id
+        sa.Index("ix_clan_members_clan_id", "clan_id"),
     )
 
-    def __init__(self, user_id: int, clan_id: int, privileges: int) -> None:
+    def __init__(self, user_id: int, clan_id: int) -> None:
         self.user_id = user_id
         self.clan_id = clan_id
-        self.privileges = privileges
