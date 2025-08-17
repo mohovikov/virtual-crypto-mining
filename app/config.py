@@ -17,6 +17,7 @@ class Config:
     TEMPLATE_FOLDER = os.path.join(BASE_DIR, "templates")
     STATIC_FOLDER = os.path.join(BASE_DIR, "static")
     MEDIA_FOLDER = os.path.join(BASE_DIR, "media")
+    CLAN_FOLDER = os.path.join(MEDIA_FOLDER, "clan")
 
     SPONSOR_LIMITS = {
         "hours": 24,
