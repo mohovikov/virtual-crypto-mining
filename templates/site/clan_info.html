@@ -6,37 +6,33 @@
 <div class="container mt-4">
   <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
-      <a class="nav-link active" aria-current="page" href="#">Главная</a>
+      <a class="nav-link active" aria-current="page" href="{{ url_for('site.clan.info', clan_id=clan.id) }}">Главная</a>
     </li>
-    {% if roles.is_creator %}
+    {% if current_user.is_authenticated and clan.leader_id == current_user.id %}
     <li class="nav-item">
-      <a class="nav-link" href="#">Настройки</a>
+      <a class="nav-link" href="{{ url_for('site.clan.settings', clan_id=clan.id) }}">Настройки</a>
     </li>
     {% endif %}
     <li class="nav-item">
       <a class="nav-link" href="#">Участники</a>
     </li>
   </ul>
-  <!-- Баннер -->
+
+  {% if clan.header_file %}
   <div class="mb-4">
-    {% if clan.header_file %}
-      <img src="{{ clan.header_file }}" class="w-100 object-fit-cover rounded" alt="Баннер клана" height="200">
-    {% else %}
-      <div class="bg-secondary rounded d-flex align-items-center justify-content-center" style="height:200px;">
-        <span class="text-white">Баннер отсутствует</span>
-      </div>
-    {% endif %}
+    <img src="{{ url_for('media', filename="clan/banner/" ~ clan.id ~ "/" ~ clan.header_file) }}" class="w-100 object-fit-cover rounded" alt="Баннер клана {{ clan.name }}" height="300">
   </div>
+  {% endif %}
 
   <!-- Логотип и название -->
   <div class="card mb-4">
     <div class="card-body">
       <div class="d-flex align-items-center">
         {% if clan.logo_file %}
-          <img src="{{ clan.logo_file }}" class="rounded shadow-sm me-3 object-fit-cover" alt="Логотип" width="160" height="80">
+          <img src="{{ url_for('media', filename="clan/logo/" ~ clan.id ~ "/" ~ clan.logo_file) }}" class="object-fit-cover rounded me-3" alt="Логотип клана {{ clan.name }}" width="180" height="90">
         {% else %}
           <div class="bg-secondary rounded me-3 d-flex align-items-center justify-content-center" style="width:160px; height:80px;">
-            <i class="fas fa-shield-alt text-white"></i>
+            <i class="fas fa-question fa-xl text-white"></i>
           </div>
         {% endif %}
         <div>
@@ -45,24 +41,32 @@
         </div>
       </div>
     </div>
-    {% if clan.is_open != None %}
-    <div class="card-footer text-end">
-      {% if roles.is_member %}
-        {% if roles.is_creator %}
-        <form action="{{ url_for('site.clan.leave', clan_id=clan.id) }}" method="post">
-          <button type="submit" class="btn btn-sm btn-danger">Распустить клан</button>
+    {% if current_user.is_authenticated %}
+      <div class="card-footer text-end">
+      {% set member = clan.members | selectattr("user.id", "equalto", current_user.id|int) | first %}
+
+      {% if not member %}
+        {% if clan.is_open %}
+        <form action="{{ url_for('site.clan.join', clan_id=clan.id) }}" method="post">
+          <button type="submit" class="btn btn-sm btn-primary">Вступить в клан</button>
         </form>
         {% else %}
-        <form action="{{ url_for('site.clan.leave', clan_id=clan.id) }}" method="post">
-          <button type="submit" class="btn btn-sm btn-danger">Выйти из клана</button>
-        </form>
+        <span title="Вы не можете вступить, так как набор в клан закрыт">
+          <button class="btn btn-sm btn-primary" disabled="disabled">Вступить в клан</button>
+        </span>
         {% endif %}
       {% else %}
-      <form action="{{ url_for('site.clan.join', clan_id=clan.id) }}" method="post">
-        <button type="submit" class="btn btn-sm btn-primary">Вступить в клан</button>
-      </form>
+        {% if clan.leader_id == current_user.id %}
+        <span title="Лидер не может покинуть собственный клан">
+          <button class="btn btn-sm btn-danger" disabled >Покинуть клан</button>
+        </span>
+        {% else %}
+        <form action="{{ url_for('site.clan.leave', clan_id=clan.id) }}" method="post">
+          <button type="submit" class="btn btn-sm btn-danger">Покинуть клан</button>
+        </form>
+        {% endif %}
       {% endif %}
-    </div>
+      </div>
     {% endif %}
   </div>
 
@@ -100,7 +104,7 @@
           <h5 class="card-title my-3 mb-0">Лидер клана</h5>
         </div>
         <div class="card-footer">
-          <a href="{{ creator.user.id }}">{{ creator.user.username }}</a>
+          <a href="{{ leader.id }}">{{ leader.username }}</a>
         </div>
       </div>
     </div>
@@ -145,9 +149,7 @@
               <i class="fas fa-user-circle fa-3x me-2"></i>
               <div class="text-start">
                 <p class="mb-0">{{ member.user.username }}</p>
-                {% if member.created_at %}
-                  <small class="text-muted">с <time class="js-datetime" data-utc="{{ member.created_at }}"></time></small>
-                {% endif %}
+                <small class="text-muted">с <time class="js-datetime" data-utc="{{ member.created_at }}"></time></small>
               </div>
             </div>
           </div>
