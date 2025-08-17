@@ -7,15 +7,39 @@ from app.forms import site_forms as forms
 
 @clan.route("/<int:clan_id>")
 def info(clan_id):
-    data = services.get_clan_info(clan_id)
-    if data is None:
+    clan, leader, members = services.get_clan_profile(clan_id)
+    if clan is None:
         abort(404)
+
     return render_template(
         "site/clan_info.html",
-        clan=data["clan"],
-        creator=data["creator"],
-        members=data["members"],
-        roles=services.get_user_clan_roles(clan_id, current_user.id)
+        clan=clan,
+        leader=leader,
+        members=members
+    )
+
+@clan.route("/<int:clan_id>/settings", methods=["GET", "POST"])
+def settings(clan_id):
+    form = forms.ClanSettingsForm()
+    clan = services.get_clan_info(clan_id)
+
+    if not clan:
+        flash("Такого клана не существует", "warning")
+        return redirect(url_for('site.index'))
+
+    if form.validate_on_submit():
+        success, message, category = services.save_clan_settings(clan, form)
+
+        if not success:
+            flash(message, category)
+            return redirect(url_for('site.clan.info', clan_id=clan.id))
+        flash(message, category)
+        return redirect(url_for('site.clan.settings', clan_id=clan.id))
+
+    return render_template(
+        "site/clan_settings.html",
+        form=form,
+        clan=clan
     )
 
 @clan.route("/<int:clan_id>/join", methods=["POST"])
@@ -26,7 +50,7 @@ def join(clan_id):
 
 @clan.route("/<int:clan_id>/leave", methods=["POST"])
 def leave(clan_id):
-    success, message, category = services.leave_clan(clan_id)
+    success, message, category = services.leave_clan(current_user.id, clan_id)
     if not success:
         flash(message, category)
         return redirect(url_for("site.clan.info", clan_id=clan_id))

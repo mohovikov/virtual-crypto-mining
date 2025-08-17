@@ -1,0 +1,89 @@
+{% extends "layouts/site.html" %}
+
+{% set title = "Настройки клан" %}
+
+{% block content %}
+<div class="container mt-4">
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="#">Главная</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Настройки</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Участники</a>
+    </li>
+  </ul>
+
+  <div class="card">
+    <form action="{{ url_for('site.clan.settings', clan_id=clan.id) }}" method="post" enctype="multipart/form-data" id="clan-settings">
+      {{ form.hidden_tag() }}
+
+      <div class="card-body">
+        <div class="mb-3">
+          {{ form.name.label(class="form-label") }}
+          {{ form.name(value=clan.name) }}
+        </div>
+        <div class="mb-3">
+          {{ form.short_name.label(class="form-label") }}
+          {{ form.short_name(value=clan.short_name) }}
+        </div>
+        <div class="mb-3">
+          {{ form.is_open.label(class="form-label") }}
+          <div class="form-check">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="{{ form.is_open.name }}" id="{{ form.is_open.name }}" value="1" {% if clan.is_open %}checked{% endif %}>
+              <label class="form-check-label" for="{{ form.is_open.name }}">Да</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="{{ form.is_open.name }}" id="{{ form.is_open.name }}" value="0" {% if not clan.is_open %}checked{% endif %}>
+              <label class="form-check-label" for="{{ form.is_open.name }}">Нет</label>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          {% if clan.logo_file %}
+          Логотип есть!
+          {% endif %}
+          {{ form.logo_file.label(class="form-label") }}
+          {{ form.logo_file(accept="image/png, image/jpeg") }}
+        </div>
+        <div class="mb-3">
+          {% if clan.header_file %}
+          Обложка есть!
+          {% endif %}
+          {{ form.banner_file.label(class="form-label") }}
+          {{ form.banner_file(accept="image/png, image/jpeg") }}
+        </div>
+        <div class="mb-3">
+          {{ form.url.label(class="form-label") }}
+          {{ form.url(value=clan.url or "") }}
+        </div>
+        <div class="mb-0">
+          {{ form.description.label(class="form-label") }}
+          <div class="row">
+            <div class="col-xl-6">
+              <div class="card">
+                <div class="card-header">BBcode</div>
+                <div class="card-body">
+                  <textarea name="{{ form.description.name }}" id="{{ form.description.name }}" class="form-control" rows="20">{{ clan.description or "" }}</textarea>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6">
+              <div class="card">
+                <div class="card-header">Превью</div>
+                <div class="card-body" id="description-preview"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        {{ form.submit(form="clan-settings") }}
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
