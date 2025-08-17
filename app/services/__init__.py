@@ -1,7 +1,8 @@
 from .clan import (
     create_clan,
     get_clan_info,
-    get_user_clan_roles,
+    get_clan_profile,
+    save_clan_settings,
     join_clan,
     leave_clan
 )
@@ -24,7 +25,8 @@ __all__ = [
     # Clans
     "create_clan",
     "get_clan_info",
-    "get_user_clan_roles",
+    "get_clan_profile",
+    "save_clan_settings",
     "join_clan",
     "leave_clan",
 
