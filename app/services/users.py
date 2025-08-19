@@ -1,12 +1,12 @@
 from typing import Optional
 from app.extensions import db, bcrypt
 from app.forms.site_forms import LoginForm, RegisterForm
-from app.models.users import Users
+from app.models.users import User
 
 
 def create_user(form: RegisterForm) -> tuple[bool, str, str]:
     hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-    user = Users(
+    user = User(
         username=str(form.username.data),
         email=str(form.email.data),
         password_hash=hashed_pw
@@ -22,16 +22,16 @@ def create_user(form: RegisterForm) -> tuple[bool, str, str]:
         return False, f"Ошибка при регистрации пользователя: {ex}", "danger"
 
 def login_user(form: LoginForm):
-    user: Optional[Users] = Users.query.filter_by(username=form.username.data).first()
+    user: Optional[User] = User.query.filter_by(username=form.username.data).first()
     if user is not None and bcrypt.check_password_hash(user.password_hash, form.password.data):
         return user, f"С возвращением, {user.username}", "success"
 
     return None, "Неверные имя пользователя и пароль.", "danger"
 
 def get_all_users(page: int):
-    return Users.query.order_by(Users.id.asc()).paginate(
+    return User.query.order_by(User.id.asc()).paginate(
         page=page, per_page=50, error_out=False
     )
 
 def get_user_data(id):
-    return Users.query.get(id)
+    return User.query.get(id)
