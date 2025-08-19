@@ -1,9 +1,8 @@
 import os
 from flask import Flask, abort, send_from_directory
 
-from app import helpers, services
+from app import helpers, services, extensions as ext
 from app.constants import Privileges
-from app.extensions import db, migrate, redis_client, scheduler, login_manager, bcrypt
 from app.config import Config
 
 
@@ -13,6 +12,7 @@ def create_app() -> Flask:
         template_folder=Config.TEMPLATE_FOLDER,
         static_folder=Config.STATIC_FOLDER
     )
+    app.config.from_object(Config)
 
     @app.context_processor
     def inject_global():
@@ -39,17 +39,17 @@ def create_app() -> Flask:
         file_name = os.path.basename(safe_path)
         return send_from_directory(directory=dir_name, path=file_name)
 
-    app.config.from_object(Config)
-    db.init_app(app)
-    migrate.init_app(app, db)
+    ext.db.init_app(app)
+    ext.migrate.init_app(app, ext.db)
 
     from app import models
 
-    bcrypt.init_app(app)
-    login_manager.init_app(app)
-    redis_client.init_app(app)
-    scheduler.init_app(app)
-    scheduler.start()
+    ext.bcrypt.init_app(app)
+    ext.login_manager.init_app(app)
+    ext.redis_client.init_app(app)
+    ext.scheduler.init_app(app)
+    ext.scheduler.start()
+    ext.mail.init_app(app)
 
     from app.blueprints.admin import admin
     app.register_blueprint(admin)
