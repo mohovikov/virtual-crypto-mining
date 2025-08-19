@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 import wtforms as forms
 from flask_wtf.file import FileField
-from wtforms.validators import DataRequired, Email, EqualTo, Length
+from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
 
 from app.models.users import User
 
@@ -60,3 +60,26 @@ class ClanSettingsForm(FlaskForm):
     url = forms.URLField("Ссылка клана", render_kw={"class": "form-control"})
     description = forms.TextAreaField("Описание клана", render_kw={"class": "form-control"})
     submit = forms.SubmitField("Сохранить изменения", render_kw={"class": "btn btn-sm btn-primary"})
+
+class SettingsForm(FlaskForm):
+    # Общие
+    username = forms.StringField("Имя пользователя", validators=[Optional(), DataRequired()])
+    username_aka = forms.StringField("Дополнительный никнейм (не используется для входа)", validators=[Optional(), DataRequired()])
+    email = forms.StringField("Email", validators=[Optional(), Email()])
+    country = forms.StringField("Страна", validators=[Optional(), DataRequired()])
+
+    # Аватар
+    avatar_file = FileField("Загрузить аватар", validators=[Optional()])
+
+    # Обо мне
+    userpage = forms.TextAreaField("О себе", validators=[Optional()])
+
+    # Пароль
+    old_password = forms.PasswordField("Старый пароль", validators=[Optional()])
+    password = forms.PasswordField("Новый пароль", validators=[Optional()])
+    confirm_password = forms.PasswordField(
+        "Подтверждение нового пароля",
+        validators=[Optional(), EqualTo("password", message="Пароли должны совпадать")]
+    )
+
+    submit = forms.SubmitField("Сохранить")
