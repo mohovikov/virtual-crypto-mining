@@ -31,11 +31,12 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Media uploads
+# Игнорируем всё в media
 media/*
+!media/**/.gitkeep
+!media/user/avatar/999/
+!media/user/avatar/999/**
 
-# Но оставляем пустую папку media
-!media/.gitkeep
 
 # Cache
 .cache/
