@@ -11,6 +11,9 @@ from .privileges import (
     get_privilege_group,
     add_privilege_group
 )
+from .settings import (
+    update_avatar
+)
 from .sponsor import (
     give_sponsor
 )
@@ -34,6 +37,9 @@ __all__ = [
     "get_all_privileges",
     "get_privilege_group",
     "add_privilege_group",
+
+    # User Settings
+    "update_avatar",
 
     # Sponsor
     "give_sponsor",
