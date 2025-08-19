@@ -4,6 +4,20 @@ from flask_login import current_user
 from app import services
 from app.blueprints.site.clan import clan
 from app.forms import site_forms as forms
+from app.models.clan_member import ClanMember
+
+
+@clan.route("/")
+def check_member():
+    # Проверяем, состоит ли пользователь в клане
+    membership = ClanMember.query.filter_by(user_id=current_user.id).first()
+
+    if membership:
+        # Ссылка на страницу клана
+        return redirect(url_for("site.clan.info", clan_id=membership.clan_id))
+    else:
+        # Ссылка на создание клана
+        return redirect(url_for("site.clan.create"))
 
 @clan.route("/<int:clan_id>")
 def info(clan_id):
