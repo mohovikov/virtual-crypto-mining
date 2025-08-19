@@ -1,15 +1,18 @@
-from datetime import datetime, timezone
-from typing import List, Optional, TYPE_CHECKING
+from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.sql import func
+from typing import List, Optional, TYPE_CHECKING
 import sqlalchemy as sa
 
 from app.extensions import db
+from app.models.base import InnoDBMixin
+
 
 if TYPE_CHECKING:
     from app.models.users import Users
     from app.models.clan_member import ClanMember
 
-class Clan(db.Model):
+class Clan(db.Model, InnoDBMixin):
     __tablename__ = 'clans'
 
     id: Mapped[int] = mapped_column(sa.Integer, primary_key=True, autoincrement=True)
@@ -22,16 +25,21 @@ class Clan(db.Model):
     is_open: Mapped[bool] = mapped_column(sa.Boolean, nullable=False, default=True)
 
     leader_id: Mapped[int] = mapped_column(
-        sa.BigInteger,
-        sa.ForeignKey("users.id", name="fk_clans_leader_id_users"),
-        nullable=False,
+        sa.Integer,
+        sa.ForeignKey("users.id", ondelete='CASCADE'),
+        nullable=False
     )
 
     created_at: Mapped[datetime] = mapped_column(
-        sa.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
+        sa.DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False
     )
     updated_at: Mapped[datetime] = mapped_column(
-        sa.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc), nullable=False
+        sa.DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False
     )
 
     # отношения
