@@ -45,7 +45,7 @@
           <span class="badge text-bg-{{ color }}">{{ text }}</span>
         </td>
       </tr>
-      {% if has_privilege(Privileges.USER_SPONSOR) %}
+      {% if has_privilege(Privileges.USER_SPONSOR, user.privileges) %}
       <tr class="table-info">
         <td>Срок "Спонсора" истекает</td>
         <td><time class="js-timeago" data-utc="{{ user.sponsor_expire }}"></time></td>
