@@ -1,3 +1,4 @@
+from flask import request
 from app.constants import Privileges
 
 
@@ -23,3 +24,13 @@ def get_privileges(user_privileges: int) -> list[dict]:
             "disabled": (privilege.value <= 2)
         })
     return result
+
+def is_active(endpoint):
+    return 'active' if request.endpoint == endpoint else ''
+
+def get_version():
+    try:
+        with open("version", "r") as f:
+            return f.read().strip()
+    except FileNotFoundError:
+        return "unknown"
