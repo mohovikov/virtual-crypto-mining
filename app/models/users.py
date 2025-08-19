@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional, TYPE_CHECKING
 from flask_login import UserMixin
 import sqlalchemy as sa
@@ -26,12 +26,12 @@ class User(db.Model, UserMixin, InnoDBMixin):
     country: Mapped[str] = mapped_column(sa.CHAR(2), default="XX")
     sponsor_expire: Mapped[Optional[datetime]] = mapped_column(
         sa.DateTime(timezone=True),
-        server_default=None,
+        default=None,
         nullable=True
     )
     register_at: Mapped[datetime] = mapped_column(
         sa.DateTime(timezone=True),
-        server_default=func.now(),
+        default=lambda: datetime.now(timezone.utc),
         nullable=False
     )
 
@@ -48,4 +48,4 @@ class User(db.Model, UserMixin, InnoDBMixin):
 
 @login_manager.user_loader
 def load_user(uid):
-    return Users.query.get(uid)
+    return User.query.get(uid)

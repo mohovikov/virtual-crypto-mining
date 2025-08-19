@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
 from typing import Optional
@@ -17,13 +17,13 @@ class PrivilegesGroup(db.Model, InnoDBMixin):
     color_class: Mapped[Optional[str]] = mapped_column(sa.String(30), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         sa.DateTime(timezone=True),
-        server_default=func.now(),
+        default=lambda: datetime.now(timezone.utc),
         nullable=False
     )
     updated_at: Mapped[datetime] = mapped_column(
         sa.DateTime(timezone=True),
-        server_default=func.now(),
-        onupdate=func.now(),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
         nullable=False
     )
 

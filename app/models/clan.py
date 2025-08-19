@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from typing import List, Optional, TYPE_CHECKING
@@ -32,13 +32,13 @@ class Clan(db.Model, InnoDBMixin):
 
     created_at: Mapped[datetime] = mapped_column(
         sa.DateTime(timezone=True),
-        server_default=func.now(),
+        default=lambda: datetime.now(timezone.utc),
         nullable=False
     )
     updated_at: Mapped[datetime] = mapped_column(
         sa.DateTime(timezone=True),
-        server_default=func.now(),
-        onupdate=func.now(),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
         nullable=False
     )
 

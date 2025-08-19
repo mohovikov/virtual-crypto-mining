@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from typing import TYPE_CHECKING
@@ -9,7 +9,7 @@ from app.models.base import InnoDBMixin
 
 
 if TYPE_CHECKING:
-    from app.models.users import Users
+    from app.models.users import User
     from app.models.clan import Clan
 
 class ClanMember(db.Model, InnoDBMixin):
@@ -29,19 +29,19 @@ class ClanMember(db.Model, InnoDBMixin):
 
     created_at: Mapped[datetime] = mapped_column(
         sa.DateTime(timezone=True),
-        default=func.now(),
+        default=lambda: datetime.now(timezone.utc),
         nullable=False
     )
     updated_at: Mapped[datetime] = mapped_column(
         sa.DateTime(timezone=True),
-        server_default=func.now(),
-        onupdate=func.now(),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
         nullable=False
     )
 
     # Связи
     clan: Mapped["Clan"] = relationship(back_populates="members")
-    user: Mapped["Users"] = relationship(back_populates="clan_memberships")
+    user: Mapped["User"] = relationship(back_populates="clan_memberships")
 
     def __init__(self, user_id: int, clan_id: int) -> None:
         self.user_id = user_id
