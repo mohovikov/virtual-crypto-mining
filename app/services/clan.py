@@ -109,9 +109,7 @@ def save_clan_settings(clan: Clan, form: ClanSettingsForm) -> Tuple[bool, str, s
     clan.short_name = str(form.short_name.data)
     clan.url = str(form.url.data)
     clan.description = str(form.description.data)
-    clan.is_open = bool(form.is_open.data)
-
-    print(save_clan_hashed_file(clan.id, form.logo_file.data, "logo"))
+    clan.is_open = bool(int(form.is_open.data))
 
     if hasattr(form, "logo_file") and form.logo_file.data:
         clan.logo_file = save_clan_hashed_file(clan.id, form.logo_file.data, "logo")
