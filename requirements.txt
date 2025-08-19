@@ -3,8 +3,10 @@ Flask
 Flask-APScheduler
 Flask-Bcrypt
 Flask-Login
+Flask-Mailman
 Flask-Migrate
 Flask-Redis
 Flask-SQLAlchemy
 Flask-WTF
+mysqlclient
 python-dotenv
