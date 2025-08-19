@@ -1,0 +1,6 @@
+<div class="list-group">
+  <a href="{{ url_for('site.settings.profile') }}" class="list-group-item list-group-item-action {{ is_active('site.settings.profile') }}">Профиль</a>
+  <a href="{{ url_for('site.settings.userpage') }}" class="list-group-item list-group-item-action {{ is_active('site.settings.userpage') }}">Страница пользователя</a>
+  <a href="{{ url_for('site.settings.avatar') }}" class="list-group-item list-group-item-action {{ is_active('site.settings.avatar') }}">Аватарка</a>
+  <a href="{{ url_for('site.settings.password') }}" class="list-group-item list-group-item-action {{ is_active('site.settings.password') }}">Пароль</a>
+</div>
