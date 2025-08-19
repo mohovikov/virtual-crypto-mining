@@ -5,9 +5,16 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 class Config:
+    DEBUG = os.environ.get("DEBUG", False) in (True, "True")
     SECRET_KEY = os.environ.get("SECRET_KEY", "")
 
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///db.sqlite3")
+    SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://{username}:{password}@{host}:{port}/{database}'.format(
+        username = os.environ.get("MYSQL_USERNAME", "root"),
+        password = os.environ.get("MYSQL_PASSWORD", ""),
+        host = os.environ.get("MYSQL_HOST", "localhost"),
+        port = int(os.environ.get("MYSQL_PORT", "3306")),
+        database=os.environ.get("MYSQL_DATABASE", "cryptomine")
+    )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     REDIS_URL = "redis://localhost:6379/0"
@@ -22,6 +29,14 @@ class Config:
     SPONSOR_LIMITS = {
         "hours": 24,
         "days": 30,
-        "months": 3,
-        "years": 1
+        "months": 6,
+        "years": 3
     }
+
+    MAIL_SERVER = os.environ.get("MAIL_SERVER", "")
+    MAIL_PORT = int(os.environ.get("MAIL_PORT", 465))
+    MAIL_USE_SSL = os.environ.get("MAIL_USE_SSL", False) in (True, "True")
+    MAIL_USE_TLS = os.environ.get("MAIL_USE_TLS", False)in (True, "True")
+    MAIL_USERNAME = os.environ.get("MAIL_USERNAME", "")
+    MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD", "")
+    MAIL_DEFAULT_SENDER = os.environ.get("MAIL_DEFAULT_SENDER", "")
