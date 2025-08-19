@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import os
 from flask import Flask, abort, send_from_directory
 
@@ -25,6 +26,9 @@ def create_app() -> Flask:
             is_locked=Privileges.is_locked,
             check_user_status=helpers.check_user_status,
             get_privileges=helpers.get_privileges,
+            version=helpers.get_version(),
+            is_active=helpers.is_active,
+            current_year=datetime.now(timezone.utc).year,
             get_privilege_group=services.get_privilege_group
         )
 
