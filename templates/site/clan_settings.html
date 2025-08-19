@@ -4,17 +4,7 @@
 
 {% block content %}
 <div class="container mt-4">
-  <ul class="nav nav-tabs mb-4">
-    <li class="nav-item">
-      <a class="nav-link active" aria-current="page" href="#">Главная</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">Настройки</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">Участники</a>
-    </li>
-  </ul>
+  {% include 'site/components/clan_tabs.html' %}
 
   <div class="card">
     <form action="{{ url_for('site.clan.settings', clan_id=clan.id) }}" method="post" enctype="multipart/form-data" id="clan-settings">

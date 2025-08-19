@@ -1,0 +1,13 @@
+<ul class="nav nav-tabs mb-4">
+  <li class="nav-item">
+    <a class="nav-link {{ is_active('site.clan.info') }}" aria-current="page" href="{{ url_for('site.clan.info', clan_id=clan.id) }}">Главная</a>
+  </li>
+  {% if current_user.is_authenticated and clan.leader_id == current_user.id %}
+  <li class="nav-item">
+    <a class="nav-link {{ is_active('site.clan.settings') }}" href="{{ url_for('site.clan.settings', clan_id=clan.id) }}">Настройки</a>
+  </li>
+  {% endif %}
+  <li class="nav-item">
+    <a class="nav-link" href="#">Участники</a>
+  </li>
+</ul>

@@ -4,19 +4,7 @@
 
 {% block content %}
 <div class="container mt-4">
-  <ul class="nav nav-tabs mb-4">
-    <li class="nav-item">
-      <a class="nav-link active" aria-current="page" href="{{ url_for('site.clan.info', clan_id=clan.id) }}">Главная</a>
-    </li>
-    {% if current_user.is_authenticated and clan.leader_id == current_user.id %}
-    <li class="nav-item">
-      <a class="nav-link" href="{{ url_for('site.clan.settings', clan_id=clan.id) }}">Настройки</a>
-    </li>
-    {% endif %}
-    <li class="nav-item">
-      <a class="nav-link" href="#">Участники</a>
-    </li>
-  </ul>
+  {% include 'site/components/clan_tabs.html' %}
 
   {% if clan.header_file %}
   <div class="mb-4">
