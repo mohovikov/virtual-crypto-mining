@@ -23,7 +23,7 @@ class Privileges(IntEnum):
                 return False
             user_privileges = current_user.privileges
 
-        return privileges & user_privileges != 0
+        return (privileges & user_privileges) > 0
 
     @classmethod
     def has_any_privilege(cls, privileges_list, user_privileges: int = -1) -> bool:
