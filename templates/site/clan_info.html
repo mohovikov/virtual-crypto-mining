@@ -78,7 +78,7 @@
           <h5 class="card-title my-3 mb-0">Дата создания</h5>
         </div>
         <div class="card-footer">
-          <time datetime="{{ clan.created_at.isoformat() }}">{{ clan.created_at.strftime("%d.%m.%Y %H:%M") }}</time>
+          <time class="js-datetime" data-utc="{{ clan.created_at }}"></time>
         </div>
       </div>
     </div>
@@ -116,7 +116,7 @@
         </div>
         <div class="card-footer">
           {% if clan.url %}
-            <a href="{{ clan.url }}" class="text-light" target="_blank">{{ clan.url }}</a>
+            <a href="{{ clan.url }}" target="_blank">{{ clan.url }}</a>
           {% else %}
             Не указан
           {% endif %}
