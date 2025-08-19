@@ -25,7 +25,6 @@ def create_app() -> Flask:
             is_locked=Privileges.is_locked,
             check_user_status=helpers.check_user_status,
             get_privileges=helpers.get_privileges,
-            get_clan_link=helpers.get_clan_link,
             get_privilege_group=services.get_privilege_group
         )
 
