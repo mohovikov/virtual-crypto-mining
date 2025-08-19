@@ -8,7 +8,7 @@ from app.extensions import db
 from app.models.base import InnoDBMixin
 
 
-class PrivilegesGroups(db.Model, InnoDBMixin):
+class PrivilegesGroup(db.Model, InnoDBMixin):
     __tablename__ = "privileges_groups"
 
     id: Mapped[int] = mapped_column(sa.Integer, primary_key=True, autoincrement=True)

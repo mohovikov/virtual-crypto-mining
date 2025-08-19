@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from app.models.clan import Clan
     from app.models.clan_member import ClanMember
 
-class Users(db.Model, UserMixin, InnoDBMixin):
+class User(db.Model, UserMixin, InnoDBMixin):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(sa.Integer, primary_key=True, autoincrement=True)

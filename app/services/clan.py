@@ -3,7 +3,7 @@ from flask_login import current_user
 
 from app.extensions import db
 from app.helpers import save_clan_hashed_file
-from app.models import Clan, ClanMember, Users
+from app.models import Clan, ClanMember, User
 from app.forms.site_forms import ClanCreateForm, ClanSettingsForm
 
 
@@ -37,7 +37,7 @@ def create_clan(form: ClanCreateForm, creator_id: int) -> tuple[bool, str, str]:
 def get_clan_info(clan_id: int):
     return Clan.query.get(clan_id)
 
-def get_clan_profile(clan_id: int) -> Tuple[Optional[Clan], Optional[Users], List[ClanMember]]:
+def get_clan_profile(clan_id: int) -> Tuple[Optional[Clan], Optional[User], List[ClanMember]]:
     """
     Получает данные профиля клана.
     Возвращает (clan, leader, members).
@@ -46,7 +46,7 @@ def get_clan_profile(clan_id: int) -> Tuple[Optional[Clan], Optional[Users], Lis
     if not clan:
         return None, None, []
 
-    leader: Users = clan.leader
+    leader: User = clan.leader
 
     # извлекаем список участников (User), сортируем по дате вступления
     members: List[ClanMember] = sorted(clan.members, key=lambda x: x.created_at)

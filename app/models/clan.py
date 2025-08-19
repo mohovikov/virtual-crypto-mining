@@ -9,7 +9,7 @@ from app.models.base import InnoDBMixin
 
 
 if TYPE_CHECKING:
-    from app.models.users import Users
+    from app.models.users import User
     from app.models.clan_member import ClanMember
 
 class Clan(db.Model, InnoDBMixin):
@@ -44,7 +44,7 @@ class Clan(db.Model, InnoDBMixin):
 
     # отношения
     members: Mapped[List["ClanMember"]] = relationship(back_populates="clan")
-    leader: Mapped["Users"] = relationship(back_populates="led_clans", foreign_keys=[leader_id])
+    leader: Mapped["User"] = relationship(back_populates="led_clans", foreign_keys=[leader_id])
 
     def __repr__(self):
         return f"<Clan {self.name}>"
