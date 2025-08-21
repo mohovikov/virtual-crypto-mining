@@ -1,6 +1,8 @@
+Babel
 email-validator
 Flask
 Flask-APScheduler
+Flask-Babel
 Flask-Bcrypt
 Flask-Login
 Flask-Mailman
