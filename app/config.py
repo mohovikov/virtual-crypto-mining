@@ -8,6 +8,8 @@ class Config:
     DEBUG = os.environ.get("DEBUG", False) in (True, "True")
     SECRET_KEY = os.environ.get("SECRET_KEY", "")
 
+    BABEL_DEFAULT_LOCALE = "RU"
+
     SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://{username}:{password}@{host}:{port}/{database}'.format(
         username = os.environ.get("MYSQL_USERNAME", "root"),
         password = os.environ.get("MYSQL_PASSWORD", ""),
