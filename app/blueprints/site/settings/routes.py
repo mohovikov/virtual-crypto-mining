@@ -11,6 +11,10 @@ from app.forms import site_forms as forms
 def profile():
     form = forms.SettingsForm()
 
+    if form.validate_on_submit() and (form.username_aka.data or form.country.data):
+        message, category = services.update_profile(form)
+        flash(message, category)
+
     return render_template(
         "site/settings/profile.html",
         form = form
@@ -20,6 +24,10 @@ def profile():
 @login_required
 def userpage():
     form = forms.SettingsForm()
+
+    if form.validate_on_submit() and form.userpage.data:
+        message, category = services.update_userpage(form)
+        flash(message, category)
 
     return render_template(
         "site/settings/userpage.html",
