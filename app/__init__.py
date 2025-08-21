@@ -28,6 +28,7 @@ def create_app() -> Flask:
             get_privileges=helpers.get_privileges,
             version=helpers.get_version(),
             is_active=helpers.is_active,
+            get_countries=helpers.get_countries(),
             current_year=datetime.now(timezone.utc).year,
             get_privilege_group=services.get_privilege_group
         )
@@ -47,6 +48,7 @@ def create_app() -> Flask:
 
     from app import models
 
+    ext.babel.init_app(app)
     ext.bcrypt.init_app(app)
     ext.login_manager.init_app(app)
     ext.redis_client.init_app(app)

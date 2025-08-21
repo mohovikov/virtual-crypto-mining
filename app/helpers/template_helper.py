@@ -1,4 +1,7 @@
+from babel import Locale
 from flask import request
+from flask_babel import get_locale
+
 from app.constants import Privileges
 
 
@@ -24,6 +27,15 @@ def get_privileges(user_privileges: int) -> list[dict]:
             "disabled": (privilege.value <= 2)
         })
     return result
+
+def get_countries():
+    # Получаем текущую локаль (например, ru или en)
+    locale = Locale(str(get_locale()))
+    countries = [
+        (code, name) for code, name in locale.territories.items() if len(code) == 2
+    ]
+    countries.sort(key=lambda x: x[1])
+    return countries
 
 def is_active(endpoint):
     return 'active' if request.endpoint == endpoint else ''
