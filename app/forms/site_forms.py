@@ -4,6 +4,7 @@ from flask_wtf.file import FileField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional
 
 from app.models.users import User
+import app.forms.custom_fields as custom
 
 
 class RegisterForm(FlaskForm):
@@ -66,7 +67,7 @@ class SettingsForm(FlaskForm):
     username = forms.StringField("Имя пользователя", validators=[Optional(), DataRequired()])
     username_aka = forms.StringField("Дополнительный никнейм (не используется для входа)", validators=[Optional(), DataRequired()])
     email = forms.StringField("Email", validators=[Optional(), Email()])
-    country = forms.StringField("Страна", validators=[Optional(), DataRequired()])
+    country = custom.CountrySelectField("Страна", validators=[Optional(), DataRequired()])
 
     # Аватар
     avatar_file = FileField("Загрузить аватар", validators=[Optional()])
