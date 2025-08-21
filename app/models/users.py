@@ -24,7 +24,7 @@ class User(db.Model, UserMixin, InnoDBMixin):
     password_hash: Mapped[str] = mapped_column(sa.String(255), nullable=False)
     privileges: Mapped[int] = mapped_column(sa.Integer, default=3)
     avatar_file: Mapped[Optional[str]] = mapped_column(sa.String(255), nullable=True)
-    country: Mapped[str] = mapped_column(sa.CHAR(2), default="XX")
+    country: Mapped[str] = mapped_column(sa.CHAR(2), default="ZZ")
     sponsor_expire: Mapped[Optional[datetime]] = mapped_column(
         sa.DateTime(timezone=True),
         default=None,
