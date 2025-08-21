@@ -9,6 +9,7 @@ from .template_helper import (
     check_user_status,
     get_privileges,
     get_version,
+    get_countries,
     is_active
 )
 
@@ -21,5 +22,6 @@ __all__ = [
     "check_user_status",
     "get_privileges",
     "get_version",
+    "get_countries",
     "is_active"
 ]
