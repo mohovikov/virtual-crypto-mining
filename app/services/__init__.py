@@ -12,7 +12,9 @@ from .privileges import (
     add_privilege_group
 )
 from .settings import (
-    update_avatar
+    update_avatar,
+    update_profile,
+    update_userpage
 )
 from .sponsor import (
     give_sponsor
@@ -40,6 +42,8 @@ __all__ = [
 
     # User Settings
     "update_avatar",
+    "update_profile",
+    "update_userpage",
 
     # Sponsor
     "give_sponsor",
