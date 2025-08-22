@@ -50,3 +50,20 @@ def save_clan_hashed_file(clan_id: int, file_storage, file_type: str) -> str | N
         return filename
     except Exception as ex:
         raise ex
+
+def save_cryptocurrency_hashed_file(cryptocurrency_id: int, file_storage, file_type: str) -> str | None:
+    """
+    Сохраняет файл клана в нужную папку и возвращает новое имя файла.
+    file_type: 'logo' или 'header'
+    """
+    if not file_storage:
+        return None
+
+    try:
+        filename, path = pre_generate_hashed_file(cryptocurrency_id, file_storage, file_type, current_app.config["CRYPTOCURRENCY_FOLDER"])
+        file_storage.stream.seek(0)
+        file_storage.save(path)
+
+        return filename
+    except Exception as ex:
+        raise ex
