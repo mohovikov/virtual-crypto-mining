@@ -28,6 +28,7 @@ class Config:
     MEDIA_FOLDER = os.path.join(BASE_DIR, "media")
     CLAN_FOLDER = os.path.join(MEDIA_FOLDER, "clan")
     USER_FOLDER = os.path.join(MEDIA_FOLDER, "user")
+    CRYPTOCURRENCY_FOLDER = os.path.join(MEDIA_FOLDER, "cryptocurrency")
 
     SPONSOR_LIMITS = {
         "hours": 24,
