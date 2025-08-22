@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, IntegerField, SubmitField, TextAreaField, ValidationError
-from wtforms.validators import DataRequired, Length, Email
+from wtforms import FileField, StringField, SelectField, IntegerField, SubmitField, TextAreaField, ValidationError, FloatField
+from wtforms.validators import DataRequired, Length, Email, Optional
 
 from app.config import Config
 
@@ -27,6 +27,12 @@ class AddPrivilegeGroup(FlaskForm):
         validators=[DataRequired()]
     )
     submit = SubmitField("Создать привилегию")
+
+class ManageCryptocurrencyForm(FlaskForm):
+    name = StringField("Название", render_kw={"class": "form-control"})
+    symbol = StringField("Символ", render_kw={"class": "form-control"})
+    icon_file = FileField("Загрузить логотип", validators=[Optional()], render_kw={"class": "form-control"})
+    submit = SubmitField("Сохранить изменения", render_kw={"class": "btn btn-sm btn-primary"})
 
 class EditUserForm(FlaskForm):
     id = IntegerField("ID", render_kw={"class": "form-control-plaintext", "readonly": True})
