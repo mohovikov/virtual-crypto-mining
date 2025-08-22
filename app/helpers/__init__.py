@@ -1,5 +1,9 @@
+from .cryptocurrency_helper import (
+    generate_price
+)
 from .file_helper import (
     save_clan_hashed_file,
+    save_cryptocurrency_hashed_file,
     save_user_hashed_file
 )
 from .sponsor_helper import (
@@ -14,7 +18,10 @@ from .template_helper import (
 )
 
 __all__ = [
+    "generate_price",
+
     "save_clan_hashed_file",
+    "save_cryptocurrency_hashed_file",
     "save_user_hashed_file",
 
     "add_sponsor_time",
