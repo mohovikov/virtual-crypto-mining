@@ -14,8 +14,12 @@
     <ul class="navbar-nav ms-md-auto">
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="https://placehold.co/30" alt="{{ current_user.username }}" class="rounded-circle me-2">
-          <span>{{ current_user.username }}</span>
+          {% if current_user.avatar_file %}
+          <img src="{{ url_for('media', filename="user/avatar/"~current_user.id~"/"~current_user.avatar_file) }}" class="rounded-circle shadow-sm" alt="{{ current_user.username }}" width="32" height="32">
+          {% else %}
+          <img src="https://placehold.co/30" alt="{{ current_user.username }}" class="rounded-circle">
+          {% endif %}
+          <span class="ms-2">{{ current_user.username }}</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-end position-absolute mt-2">
           <li class="text-center">
