@@ -3,7 +3,6 @@ from typing import List, Optional, TYPE_CHECKING
 from flask_login import UserMixin
 import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.sql import func
 
 from app.extensions import db, login_manager
 from app.models.base import InnoDBMixin
@@ -12,6 +11,7 @@ from app.models.base import InnoDBMixin
 if TYPE_CHECKING:
     from app.models.clan import Clan
     from app.models.clan_member import ClanMember
+    from app.models.user_balance import UserBalance
 
 class User(db.Model, UserMixin, InnoDBMixin):
     __tablename__ = "users"
@@ -20,6 +20,7 @@ class User(db.Model, UserMixin, InnoDBMixin):
     username: Mapped[str] = mapped_column(sa.String(30), nullable=False, unique=True, index=True)
     username_aka: Mapped[str] = mapped_column(sa.String(32), nullable=True)
     userpage: Mapped[str] = mapped_column(sa.Text, nullable=True)
+    balance: Mapped[float] = mapped_column(sa.Numeric(18, 2), nullable=False, default=0.00)
     email: Mapped[str] = mapped_column(sa.String(255), nullable=False, unique=True)
     password_hash: Mapped[str] = mapped_column(sa.String(255), nullable=False)
     privileges: Mapped[int] = mapped_column(sa.Integer, default=3)
@@ -36,7 +37,7 @@ class User(db.Model, UserMixin, InnoDBMixin):
         nullable=False
     )
 
-    # связи с кланами
+    balances: Mapped[List["UserBalance"]] = relationship("UserBalance", back_populates="user", cascade="all, delete-orphan")
     clan_memberships: Mapped[List["ClanMember"]] = relationship(back_populates="user")
     led_clans: Mapped[List["Clan"]] = relationship(back_populates="leader", foreign_keys="[Clan.leader_id]")
 
