@@ -1,0 +1,65 @@
+{% extends 'layouts/admin.html' %}
+
+{% set title = "Криптовалюты" %}
+
+{% block content %}
+<h2 class="pb-3 mb-3 text-center border-bottom">
+  <i class="fa-solid fa-coins"></i>
+  <span>{{ title }}</span>
+</h2>
+
+<table class="table table-striped align-middle text-center w-75 mx-auto">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Название</th>
+      <th scope="col">Стоимость</th>
+      <th scope="col">Дата создания</th>
+      <th scope="col">Дата обновления</th>
+      <th scope="col">Действия</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for cryptocurrency in cryptocurrencies %}
+    <tr>
+      <th scope="col">{{ cryptocurrency.id }}</th>
+      <td class="d-flex align-items-center justify-content-center">
+        {% if cryptocurrency.icon_file %}
+        <img src="{{ url_for('media', filename="cryptocurrency/icon/" ~ cryptocurrency.id ~ "/" ~ cryptocurrency.icon_file) }}" class="rounded me-2" alt="{{ cryptocurrency.name }}" width="32" height="32">
+        {% endif %}
+        <span class="fw-bold">{{ cryptocurrency.name }}</span>
+        <span class="ms-2 fw-medium">{{ cryptocurrency.symbol }}</span>
+      </td>
+      <td>
+        <span class="js-price" data-price="{{ cryptocurrency.price }}"></span>
+      </td>
+      <td>
+        <time class="js-datetime" data-utc="{{ cryptocurrency.created_at }}"></time>
+      </td>
+      <td>
+        <time class="js-datetime" data-utc="{{ cryptocurrency.updated_at }}"></time>
+      </td>
+      <td>
+        <div class="btn-group btn-group-sm">
+          <a href="{{ url_for('admin.cryptocurrency.update_price', crypto_id=cryptocurrency.id) }}" class="btn btn-info" title="Обновить курс">
+            <i class="fa-solid fa-arrows-rotate"></i>
+          </a>
+          <a href="{{ url_for('admin.cryptocurrency.edit', crypto_id=cryptocurrency.id) }}" class="btn btn-primary" title="Редактировать">
+            <i class="fa-solid fa-pencil"></i>
+          </a>
+          <a href="#" class="btn btn-danger" title="Удалить">
+            <i class="fa-solid fa-trash"></i>
+          </a>
+        </div>
+      </td>
+    </tr>
+    {% else %}
+    {% endfor %}
+    <tr>
+      <td colspan="6">
+        <a href="{{ url_for('admin.cryptocurrency.add') }}" class="btn btn-sm btn-primary">Добавить новую валюту</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}
