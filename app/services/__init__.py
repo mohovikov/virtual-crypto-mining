@@ -6,6 +6,13 @@ from .clan import (
     join_clan,
     leave_clan
 )
+from .cryptocurrency import (
+    get_all_cryptocurrencies,
+    get_cryptocurrency,
+    create_cryptocurrency,
+    edit_cryptocurrency,
+    update_price_cryptocurrency
+)
 from .privileges import (
     get_all_privileges,
     get_privilege_group,
@@ -34,6 +41,13 @@ __all__ = [
     "save_clan_settings",
     "join_clan",
     "leave_clan",
+
+    # Cryptocurrency
+    "get_all_cryptocurrencies",
+    "get_cryptocurrency",
+    "create_cryptocurrency",
+    "edit_cryptocurrency",
+    "update_price_cryptocurrency",
 
     # Privileges Groups
     "get_all_privileges",
