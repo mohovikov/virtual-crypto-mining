@@ -53,7 +53,7 @@ def upgrade():
     with op.batch_alter_table('users', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_users_username'), ['username'], unique=True)
     
-    op.execute("ALTER TABLE users AUTO_INCREMENT = 999")
+    op.execute("ALTER TABLE users AUTO_INCREMENT = 1000")
 
     conn.execute(sa.text("""
         INSERT INTO users (username, username_aka, userpage, email, password_hash, privileges, country, sponsor_expire,  register_at)
