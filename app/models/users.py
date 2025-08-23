@@ -40,6 +40,7 @@ class User(db.Model, UserMixin, InnoDBMixin):
     balances: Mapped[List["UserBalance"]] = relationship("UserBalance", back_populates="user", cascade="all, delete-orphan")
     clan_memberships: Mapped[List["ClanMember"]] = relationship(back_populates="user")
     led_clans: Mapped[List["Clan"]] = relationship(back_populates="leader", foreign_keys="[Clan.leader_id]")
+    cryptos = relationship("Cryptocurrency", back_populates="creator")
 
     def __init__(self, username: str, email: str, password_hash: str, sponsor_expire: datetime | None = None) -> None:
         self.username = username
