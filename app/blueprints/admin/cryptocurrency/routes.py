@@ -68,7 +68,7 @@ def history(crypto_id: int):
         db.session.query(CryptoPriceHistory)
         .filter_by(crypto_id=crypto_id)
         .order_by(CryptoPriceHistory.created_at.desc())
-        .limit(10)
+        .limit(50)
         .all()
     )
 
