@@ -65,7 +65,7 @@ async function loadChart(url) {
     }
     return date.toLocaleString(undefined, options)
   })
-  const prices = data.map(item => item.price)
+  const prices = data.map(item => parseFloat(item.price))
 
   const ctx = document.getElementById("priceChart").getContext("2d")
   new Chart(ctx, {
@@ -88,11 +88,34 @@ async function loadChart(url) {
         title: {
           display: true,
           text: 'График курса валюты'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.parsed.y.toLocaleString("ru-RU", {
+                style: "currency",
+                currency: "RUB",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              })
+            }
+          }
         }
       },
       scales: {
-        x: { title: { display: true, text: "Время" }},
-        y: { title: { display: true, text: "Стоимость" }}
+        x: { display: false },
+        y: {
+          ticks: {
+            callback: function(value) {
+              return value.toLocaleString("ru-RU", {
+                style: "currency",
+                currency: "RUB",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              })
+            }
+          }
+        }
       }
     }
   })
