@@ -48,7 +48,7 @@
       {% if has_privilege(Privileges.USER_SPONSOR, user.privileges) %}
       <tr class="table-info">
         <td>Срок "Спонсора" истекает</td>
-        <td><time class="js-timeago" data-utc="{{ user.sponsor_expire }}"></time></td>
+        <td><time class="js-timeago" data-utc="{{ user.sponsor_expire }}" data-bs-toggle="tooltip"></time></td>
       </tr>
       {% endif %}
       <tr>

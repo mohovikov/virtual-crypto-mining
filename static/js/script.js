@@ -6,19 +6,6 @@ document.querySelectorAll('.toast').forEach(function (toastEl, index) {
     toast.show()
 })
 
-document.querySelectorAll('time.js-datetime').forEach(el => {
-  let utcStr = el.dataset.utc
-
-  let isoStr = utcStr.replace(' ', 'T').split('.')[0] + 'Z'
-  let date = new Date(isoStr)
-
-  let options = {
-    year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit', second: '2-digit'
-  }
-  el.textContent = date.toLocaleString(undefined, options)
-})
-
 document.querySelectorAll('time.js-timeago').forEach(el => {
   let utcStr = el.dataset.utc
   if (!utcStr) return
@@ -27,6 +14,16 @@ document.querySelectorAll('time.js-timeago').forEach(el => {
   let date = new Date(isoString)
 
   el.textContent = format(date, 'ru')
+
+  el.setAttribute("data-bs-title", date.toLocaleString("ru-RU", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short"
+  }))
 })
 
 document.querySelectorAll('span.js-price').forEach(el => {
@@ -77,7 +74,7 @@ async function loadChart(url) {
         data: prices,
         borderColor: "blue",
         borderWidth: 2,
-        fill: false,
+        fill: true,
         tension: 0.1
       }]
     },
@@ -120,3 +117,6 @@ async function loadChart(url) {
     }
   })
 }
+
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))

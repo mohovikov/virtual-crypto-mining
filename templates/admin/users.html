@@ -49,7 +49,7 @@
         <span class="badge text-bg-{{ color }}">{{ text }}</span>
       </td>
       <td>
-        <time class="js-datetime" data-utc="{{ user.register_at }}">{{ user.register_at }}</time>
+        <time class="js-timeago" data-utc="{{ user.register_at }}" data-bs-toggle="tooltip"></time>
       </td>
       {% if has_any_privilege(needed_privs) %}
       <td>

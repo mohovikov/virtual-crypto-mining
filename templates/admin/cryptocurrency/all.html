@@ -48,10 +48,10 @@
         {% endif %}
       </td>
       <td>
-        <time class="js-datetime" data-utc="{{ cryptocurrency.created_at }}"></time>
+        <time class="js-timeago" data-utc="{{ cryptocurrency.created_at }}" data-bs-toggle="tooltip"></time>
       </td>
       <td>
-        <time class="js-datetime" data-utc="{{ cryptocurrency.updated_at }}"></time>
+        <time class="js-timeago" data-utc="{{ cryptocurrency.updated_at }}" data-bs-toggle="tooltip" ></time>
       </td>
       <td>
         <div class="btn-group btn-group-sm">
