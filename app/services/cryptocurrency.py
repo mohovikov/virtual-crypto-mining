@@ -1,3 +1,4 @@
+from flask_login import current_user
 from app.extensions import db
 from app.forms import admin_forms as forms
 from app.helpers import save_cryptocurrency_hashed_file, generate_price
@@ -10,11 +11,13 @@ def get_all_cryptocurrencies():
 def get_cryptocurrency(crypto_id: int):
     return Cryptocurrency.query.get(crypto_id)
 
-def create_cryptocurrency(form: forms.ManageCryptocurrencyForm) -> tuple[bool, str, str]:
+def create_cryptocurrency(form: forms.ManageCryptocurrencyForm, is_approved: bool = True, creator_id: int = -1) -> tuple[bool, str, str]:
     cryptocurrency = Cryptocurrency(
         name = str(form.name.data),
         symbol = str(form.symbol.data),
-        price = generate_price()
+        price = generate_price(),
+        is_approved = is_approved,
+        creator_id = 999 if creator_id == -1 else current_user.id
     )
     try:
         db.session.add(cryptocurrency)
@@ -60,8 +63,18 @@ def update_price_cryptocurrency(crypto_id: int) -> tuple[str, str]:
             crypto_id=cryptocurrency.id,
             price=new_price
         ))
-
         db.session.commit()
+
+        history = (CryptoPriceHistory.query
+               .filter_by(crypto_id=crypto_id)
+               .order_by(CryptoPriceHistory.created_at.desc())
+               .all())
+
+        if len(history) > 50:
+            for entry in history[50:]:  # берём все кроме первых 15
+                db.session.delete(entry)
+            db.session.commit()
+
         return f"Курс для монеты «{cryptocurrency.name}» обновлен!", "success"
     except Exception as ex:
         db.session.rollback()
