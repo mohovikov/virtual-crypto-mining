@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 import os
 from flask import Flask, abort, send_from_directory
 
-from app import helpers, services, extensions as ext
+from app import helpers, services, extensions as ext, tasks
 from app.constants import Privileges
 from app.config import Config
 
@@ -52,9 +52,15 @@ def create_app() -> Flask:
     ext.bcrypt.init_app(app)
     ext.login_manager.init_app(app)
     ext.redis_client.init_app(app)
+
     ext.scheduler.init_app(app)
     ext.scheduler.start()
+    tasks.register_tasks(ext.scheduler, app)
+
     ext.mail.init_app(app)
+
+    from app.blueprints.api import api
+    app.register_blueprint(api)
 
     from app.blueprints.admin import admin
     app.register_blueprint(admin)
