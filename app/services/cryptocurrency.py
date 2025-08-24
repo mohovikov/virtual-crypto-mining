@@ -1,8 +1,7 @@
-from flask_login import current_user
 from app.extensions import db
 from app.forms import admin_forms as forms
 from app.helpers import save_cryptocurrency_hashed_file, generate_price
-from app.models.cryptocurrency import Cryptocurrency
+from app.models import Cryptocurrency, CryptoPriceHistory
 
 
 def get_all_cryptocurrencies():
@@ -15,9 +14,9 @@ def create_cryptocurrency(form: forms.ManageCryptocurrencyForm, is_approved: boo
     cryptocurrency = Cryptocurrency(
         name = str(form.name.data),
         symbol = str(form.symbol.data),
-        price = generate_price(),
+        price = 0.00,
         is_approved = is_approved,
-        creator_id = 999 if creator_id == -1 else current_user.id
+        creator_id = 999 if creator_id == -1 else creator_id
     )
     try:
         db.session.add(cryptocurrency)
@@ -33,7 +32,10 @@ def create_cryptocurrency(form: forms.ManageCryptocurrencyForm, is_approved: boo
         print(ex)
         return False, f"Ошибка при добавлении:<br>{ex}", "danger"
 
-def edit_cryptocurrency(cryptocurrency: Cryptocurrency, form: forms.ManageCryptocurrencyForm) -> tuple[bool, str, str]:
+def edit_cryptocurrency(cryptocurrency: Cryptocurrency | None, form: forms.ManageCryptocurrencyForm) -> tuple[bool, str, str]:
+    if not cryptocurrency:
+        return False, "Монеты с таким ID не найдено", "warning"
+
     try:
         cryptocurrency.name = str(form.name.data)
         cryptocurrency.symbol = str(form.symbol.data)
@@ -58,25 +60,27 @@ def update_price_cryptocurrency(crypto_id: int) -> tuple[str, str]:
         new_price = generate_price()
         cryptocurrency.price = new_price
 
-        from app.models.crypto_price_history import CryptoPriceHistory
-        db.session.add(CryptoPriceHistory(
-            crypto_id=cryptocurrency.id,
-            price=new_price
-        ))
-        db.session.commit()
-
-        history = (CryptoPriceHistory.query
-               .filter_by(crypto_id=crypto_id)
-               .order_by(CryptoPriceHistory.created_at.desc())
-               .all())
-
-        if len(history) > 50:
-            for entry in history[50:]:  # берём все кроме первых 15
-                db.session.delete(entry)
-            db.session.commit()
+        add_crypto_price_history(cryptocurrency.id, new_price)
 
         return f"Курс для монеты «{cryptocurrency.name}» обновлен!", "success"
     except Exception as ex:
         db.session.rollback()
         print(ex)
         return f"Ошибка при обновлении курса:<br>{ex}", "danger"
+
+def add_crypto_price_history(crypto_id, price):
+    db.session.add(CryptoPriceHistory(
+        crypto_id=crypto_id,
+        price=price
+    ))
+    db.session.commit()
+
+    history = (CryptoPriceHistory.query
+            .filter_by(crypto_id=crypto_id)
+            .order_by(CryptoPriceHistory.created_at.desc())
+            .all())
+
+    if len(history) > 50:
+        for entry in history[50:]:  # берём все кроме первых 15
+            db.session.delete(entry)
+        db.session.commit()
