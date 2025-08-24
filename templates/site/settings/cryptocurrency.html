@@ -1,0 +1,105 @@
+{% extends 'layouts/site.html' %}
+
+{% set title = "Криптовалюта" %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">{% include 'site/settings/sidebar.html' %}</div>
+    <div class="col-md-9">
+      <div class="card">
+        {% if not has_privilege(Privileges.USER_SPONSOR) or not current_user.cryptos %}
+        <div class="card-body">
+          <div class="alert alert-warning d-flex align-items-center gap-3 mb-0" role="alert">
+            <i class="fa-solid fa-lock fa-2xl"></i>
+            <div>
+              <h5 class="alert-heading">Эта функция доступна только для спонсоров</h5>
+              <p class="mb-0">Приобретите статус «Спонсора», чтобы поддержать нас и разблокировать эту и многие другие функции!</p>
+            </div>
+          </div>
+        </div>
+        {% else %}
+          {% if current_user.cryptos %}
+            {% if current_user.cryptos.is_approved %}
+            <form action="{{ url_for('site.settings.cryptocurrency_update') }}" method="post" enctype="multipart/form-data">
+              {{ form.hidden_tag() }}
+              <div class="card-body">
+                <div class="alert alert-success d-flex align-items-center gap-3" role="alert">
+                  <i class="fa-solid fa-circle-check"></i>
+                  <div>Монета прошла модерацию и была опубликована. Теперь её могут видеть и использовать другие пользователи.</div>
+                </div>
+                <div class="mb-3">
+                  {{ form.name.label(class="form-label") }}
+                  {{ form.name(value=current_user.cryptos.name or "") }}
+                </div>
+                <div class="mb-3">
+                  {{ form.symbol.label(class="form-label") }}
+                  {{ form.symbol(value=current_user.cryptos.symbol or "") }}
+                </div>
+                <div class="mb-0">
+                  {{ form.icon_file.label(class="form-label") }}
+                  {% if current_user.cryptos.icon_file %}
+                    <img src="{{ url_for('media', filename="cryptocurrency/icon/" ~ current_user.cryptos.id ~ "/" ~ current_user.cryptos.icon_file) }}" alt="{{ current_user.cryptos.name }}" class="d-block rounded mb-2" width="128" height="128">
+                  {% endif %}
+                  {{ form.icon_file() }}
+                </div>
+              </div>
+              <div class="card-footer">{{ form.submit }}</div>
+            </form>
+            {% else %}
+            <div class="card-body">
+              <div class="alert alert-warning d-flex align-items-center gap-3 mb-0" role="alert">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <div>Ваша криптовалюта успешно добавлена и отправлена на модерацию. После проверки она будет опубликована.</div>
+              </div>
+            </div>
+            {% endif %}
+          {% else %}
+            <form action="{{ url_for('site.settings.cryptocurrency') }}" method="post" enctype="multipart/form-data">
+              {{ form.hidden_tag() }}
+              <div class="card-body">
+                <div class="alert alert-primary d-flex align-items-center gap-3" role="alert">
+                  <i class="fa-solid fa-circle-info"></i>
+                  <div>Похоже, что у вас ещё нет собственной криптовалюты. Самое время это исправить!</div>
+                </div>
+                <div class="mb-3">
+                  {{ form.name.label(class="form-label") }}
+                  {{ form.name() }}
+                </div>
+                <div class="mb-3">
+                  {{ form.symbol.label(class="form-label") }}
+                  {{ form.symbol() }}
+                </div>
+                <div class="mb-0">
+                  {{ form.icon_file.label(class="form-label") }}
+                  {{ form.icon_file() }}
+                </div>
+              </div>
+              <div class="card-footer">{{ form.submit }}</div>
+            </form>
+          {% endif %}
+          </div>
+        </form>
+        {% endif %}
+
+        {% if current_user.cryptos.is_approved %}
+        <div class="card mt-3">
+          <div class="card-body">
+            <canvas id="priceChart"></canvas>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% if current_user.cryptos.is_approved %}
+  {% block js %}
+  <script type="text/javascript">
+    const url = "{{ url_for('admin.cryptocurrency.history', crypto_id=current_user.cryptos.id) }}"
+    loadChart(url)
+  </script>
+  {% endblock %}
+{% endif %}

@@ -1,9 +1,9 @@
-from flask import flash, render_template
-from flask_login import login_required
+from flask import flash, redirect, render_template, request, url_for
+from flask_login import current_user, login_required
 
 from app import services
 from app.blueprints.site.settings import settings
-from app.forms import site_forms as forms
+from app.forms import admin_forms, site_forms as forms
 
 
 @settings.route("/", methods=["GET", "POST"])
@@ -57,3 +57,31 @@ def password():
         "site/settings/password.html",
         form = form
     )
+
+@settings.route("/cryptocurrency", methods=["GET", "POST"])
+@login_required
+def cryptocurrency():
+    form = admin_forms.ManageCryptocurrencyForm()
+
+    if form.validate_on_submit():
+        _, message, category = services.create_cryptocurrency(form, False, current_user.id)
+
+        flash(message, category)
+        return redirect(request.referrer or url_for('site.settings.profile'))
+
+    return render_template(
+        "site/settings/cryptocurrency.html",
+        form = form
+    )
+
+@settings.route("/cryptocurrency/update", methods=["POST"])
+@login_required
+def cryptocurrency_update():
+    form = admin_forms.ManageCryptocurrencyForm()
+    cryptocurrency = services.get_cryptocurrency(current_user.cryptos.id)
+
+    if form.validate_on_submit():
+        _, message, category = services.edit_cryptocurrency(cryptocurrency, form)
+
+        flash(message, category)
+    return redirect(request.referrer or url_for('site.settings.profile'))
