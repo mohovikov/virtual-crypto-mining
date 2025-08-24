@@ -15,6 +15,7 @@ class Privileges(IntEnum):
     ADMIN_LOCK_USERS        = 2 << 6
 
     ADMIN_MANAGE_PRIVILEGES = 2 << 7
+    ADMIN_MANAGE_TASKS = 2 << 8
 
     @classmethod
     def has_privilege(cls, privileges, user_privileges: int = -1) -> bool:
