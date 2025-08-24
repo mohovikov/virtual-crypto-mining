@@ -22,6 +22,7 @@ class Config:
     REDIS_URL = "redis://localhost:6379/0"
 
     SCHEDULER_API_ENABLED = True
+    SCHEDULER_TIMEZONE = "UTC"
 
     TEMPLATE_FOLDER = os.path.join(BASE_DIR, "templates")
     STATIC_FOLDER = os.path.join(BASE_DIR, "static")
