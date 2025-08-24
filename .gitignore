@@ -5,6 +5,11 @@ __pycache__/
 *.pyd
 *.so
 
+# NPM
+node_modules
+**-lock.json
+script.min.js
+
 # Virtual environment
 venv/
 .venv/
