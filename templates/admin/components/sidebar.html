@@ -45,6 +45,14 @@
           </a>
         </li>
       </ul>
+      <ul class="nav flex-column mb-auto">
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-2 {{ is_active('admin.task.all') }}" href="{{ url_for('admin.task.all') }}">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Задачи</span>
+          </a>
+        </li>
+      </ul>
       <hr class="my-3">
       <h6 class="sidebar-heading px-3 mb-2 text-body-secondary text-uppercase">Прочее</h6>
       <ul class="nav flex-column mb-auto">
