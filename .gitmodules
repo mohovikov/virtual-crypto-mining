@@ -1,3 +1,6 @@
 [submodule "static/js/bootstrap-bbcode"]
 	path = static/js/bootstrap-bbcode
 	url = https://github.com/mohovikov/bootstrap-bbcode.git
+[submodule "site-js"]
+	path = site-js
+	url = https://github.com/mohovikov/site-js.git
