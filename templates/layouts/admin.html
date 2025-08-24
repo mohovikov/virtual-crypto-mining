@@ -34,7 +34,7 @@
       } %}
       <div class="toast-container position-fixed top-0 end-0 p-3">
         {% for category, message in messages %}
-        <div class="toast text-bg-{{ category }}" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast text-bg-{{ category }}" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
           <div class="toast-header">
             <i class="fa-solid {{ categories[category].icon }} me-2"></i>
             <strong class="me-auto">{{ categories[category].title }}</strong>
@@ -46,18 +46,6 @@
       </div>
     {% endif %}
   {% endwith %}
-
-  <!-- Bootstrap Bundle Core -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/js/bootstrap.bundle.min.js" integrity="sha512-Tc0i+vRogmX4NN7tuLbQfBxa8JkfUSAxSFVzmU31nVdHyiHElPPy2cWfFacmCJKw0VqovrzKhdd2TSTMdAxp2g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-  <!-- JQuery Core -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-  <!-- Chart.JS Core -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js" integrity="sha512-Y51n9mtKTVBh3Jbx5pZSJNDDMyY+yGe77DGtBPzRlgsf/YLCh13kSZ3JmfHGzYFCmOndraf0sQgfM654b7dJ3w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-  <!-- Timeago JS Core -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.full.min.js" integrity="sha512-wb3lqal2VtYhmlPAr232VP+Zus676CFAEYdywxIUSxG6F/X9WhN6SpREkWUdwBvMpd6gCKuKTGHhdum6m1wOvQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <!-- Custom JS -->
   <script src="{{ url_for('static', filename='js/script.min.js') }}"></script>
