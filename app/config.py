@@ -19,24 +19,9 @@ class Config:
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    REDIS_URL = "redis://localhost:6379/0"
-
-    SCHEDULER_API_ENABLED = True
-    SCHEDULER_TIMEZONE = "UTC"
-
     TEMPLATE_FOLDER = os.path.join(BASE_DIR, "templates")
     STATIC_FOLDER = os.path.join(BASE_DIR, "static")
     MEDIA_FOLDER = os.path.join(BASE_DIR, "media")
-    CLAN_FOLDER = os.path.join(MEDIA_FOLDER, "clan")
-    USER_FOLDER = os.path.join(MEDIA_FOLDER, "user")
-    CRYPTOCURRENCY_FOLDER = os.path.join(MEDIA_FOLDER, "cryptocurrency")
-
-    SPONSOR_LIMITS = {
-        "hours": 24,
-        "days": 30,
-        "months": 6,
-        "years": 3
-    }
 
     MAIL_SERVER = os.environ.get("MAIL_SERVER", "")
     MAIL_PORT = int(os.environ.get("MAIL_PORT", 465))

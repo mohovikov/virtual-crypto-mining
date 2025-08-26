@@ -1,8 +1,7 @@
-from datetime import datetime, timezone
 import os
 from flask import Flask, abort, send_from_directory
 
-from app import helpers, services, extensions as ext, tasks
+from app import extensions as ext
 from app.constants import Privileges
 from app.config import Config
 
@@ -23,14 +22,7 @@ def create_app() -> Flask:
             has_any_privilege=Privileges.has_any_privilege,
             is_restricted=Privileges.is_restricted,
             is_banned=Privileges.is_banned,
-            is_locked=Privileges.is_locked,
-            check_user_status=helpers.check_user_status,
-            get_privileges=helpers.get_privileges,
-            version=helpers.get_version(),
-            is_active=helpers.is_active,
-            get_countries=helpers.get_countries(),
-            current_year=datetime.now(timezone.utc).year,
-            get_privilege_group=services.get_privilege_group
+            is_locked=Privileges.is_locked
         )
 
     @app.route("/media/<path:filename>")
@@ -49,21 +41,9 @@ def create_app() -> Flask:
     from app import models
 
     ext.babel.init_app(app)
-    ext.bcrypt.init_app(app)
     ext.login_manager.init_app(app)
-    ext.redis_client.init_app(app)
-
-    ext.scheduler.init_app(app)
-    ext.scheduler.start()
-    tasks.register_tasks(ext.scheduler, app)
 
     ext.mail.init_app(app)
-
-    from app.blueprints.api import api
-    app.register_blueprint(api)
-
-    from app.blueprints.admin import admin
-    app.register_blueprint(admin)
 
     from app.blueprints.site import site
     app.register_blueprint(site)
