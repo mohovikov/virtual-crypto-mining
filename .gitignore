@@ -5,11 +5,6 @@ __pycache__/
 *.pyd
 *.so
 
-# NPM
-node_modules
-**-lock.json
-script.min.js
-
 # Virtual environment
 venv/
 .venv/
@@ -35,13 +30,6 @@ Thumbs.db
 # IDE settings
 .vscode/
 .idea/
-
-# Игнорируем всё в media
-media/*
-!media/**/.gitkeep
-!media/user/avatar/999/
-!media/user/avatar/999/**
-
 
 # Cache
 .cache/

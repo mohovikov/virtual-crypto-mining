@@ -9,14 +9,6 @@ class Privileges(IntEnum):
     USER_SPONSOR            = 2 << 1
     ADMIN_ACCESS_PANEL      = 2 << 2
 
-    ADMIN_EDIT_USERS        = 2 << 3
-    ADMIN_RESTRICT_USERS    = 2 << 4
-    ADMIN_BAN_USERS         = 2 << 5
-    ADMIN_LOCK_USERS        = 2 << 6
-
-    ADMIN_MANAGE_PRIVILEGES = 2 << 7
-    ADMIN_MANAGE_TASKS = 2 << 8
-
     @classmethod
     def has_privilege(cls, privileges, user_privileges: int = -1) -> bool:
         if user_privileges == -1:
