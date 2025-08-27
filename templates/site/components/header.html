@@ -1,0 +1,70 @@
+<nav class="navbar navbar-expand-lg shadow">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('site.index') }}">VCM</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav gap-3 me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="btn btn-sm bg-body-tertiary" href="#">Таблица лидеров</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="btn btn-sm bg-body-tertiary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Справка</a>
+          <ul class="dropdown-menu" style="font-size: 0.875rem;">
+            <li>
+              <a class="dropdown-item" href="#">О проекте</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">Правила</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">Документация</a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">Связь с поддержкой</a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-sm bg-body-tertiary" href="#">
+            <i class="fa-solid fa-heart text-danger me-1"></i>
+            <span>Пожертвовать</span>
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav gap-3 ms-auto mb-2 mb-lg-0">
+        {% if current_user.is_authenticated %}
+        <li class="nav-item">
+          <a class="btn btn-sm bg-body-tertiary" href="#" target="_blank">Админпанель</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="btn btn-sm bg-body-tertiary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ current_user.username }}</a>
+          <ul class="dropdown-menu" style="font-size: 0.875rem;">
+            <li><a class="dropdown-item" href="#">Профиль</a></li>
+            <li><a class="dropdown-item" href="#">Друзья</a></li>
+            <li><a class="dropdown-item" href="#">Настройки</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ url_for('site.logout') }}">Выход</a></li>
+          </ul>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="btn btn-sm bg-body-tertiary" href="{{ url_for('site.login') }}">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <span>Войти</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-sm bg-body-tertiary" href="{{ url_for('site.register') }}">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Регистрация</span>
+          </a>
+        </li>
+        {% endif %}
+    </div>
+  </div>
+</nav>
