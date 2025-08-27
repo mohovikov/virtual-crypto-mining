@@ -3,3 +3,17 @@
 body {
   font-family: "Inter", sans-serif;
 }
+
+.banner-image {
+  height: 160px;
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-image {
+  max-width: 280px;
+  height: auto;
+  margin-top: -80px;
+  position: relative;
+  z-index: 1000;
+}
