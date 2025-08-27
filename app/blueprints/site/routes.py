@@ -16,3 +16,12 @@ def register():
         "site/register.html",
         form = form
     )
+
+@site.route("/login", methods=["GET", "POST"])
+def login():
+    form = forms.LoginForm()
+
+    return render_template(
+        "site/login.html",
+        form = form
+    )
