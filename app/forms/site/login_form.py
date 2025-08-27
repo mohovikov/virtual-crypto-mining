@@ -5,12 +5,32 @@ import wtforms.validators as validators
 
 class LoginForm(FlaskForm):
     username = forms.StringField(
-        "Имя пользователя",
-        validators=[validators.DataRequired()]
+        label = "Имя пользователя",
+        validators = [
+            validators.DataRequired()
+        ],
+        render_kw = {
+            "class": "form-control"
+        }
     )
     password = forms.PasswordField(
-        "Пароль",
-        validators=[validators.DataRequired()]
+        label = "Пароль",
+        validators = [
+            validators.DataRequired()
+        ],
+        render_kw = {
+            "class": "form-control"
+        }
     )
-    remember = forms.BooleanField("Запомнить меня")
-    submit = forms.SubmitField("Войти")
+    remember = forms.BooleanField(
+        label = "Запомнить меня",
+        render_kw = {
+            "class": "form-check-input"
+        }
+    )
+    submit = forms.SubmitField(
+        label = "Войти",
+        render_kw = {
+            "class": "btn btn-sm btn-primary"
+        }
+    )
