@@ -16,7 +16,7 @@ class RegisterForm(FlaskForm):
             "class": "form-control"
         }
     )
-    email = forms.StringField(
+    email = forms.EmailField(
         "Email",
         validators=[
             validators.DataRequired(),
