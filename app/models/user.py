@@ -17,7 +17,7 @@ class User(db.Model, UserMixin, BaseMixin):
         autoincrement=True
     )
     username: Mapped[str] = mapped_column(
-        sa.String(30),
+        sa.String(32),
         nullable=False,
         unique=True,
         index=True
@@ -27,9 +27,10 @@ class User(db.Model, UserMixin, BaseMixin):
         nullable=True
     )
     email: Mapped[str] = mapped_column(
-        sa.String(255),
+        sa.String(254),
         nullable=False,
-        unique=True
+        unique=True,
+        index=True
     )
     password_hash: Mapped[str] = mapped_column(
         sa.String(255),
@@ -41,7 +42,10 @@ class User(db.Model, UserMixin, BaseMixin):
     )
     privileges: Mapped[int] = mapped_column(
         sa.BigInteger,
-        default=3
+        default=3,
+        nullable=False,
+        index=True,
+        server_default="3"
     )
     avatar_file: Mapped[Optional[str]] = mapped_column(
         sa.String(255),
@@ -49,16 +53,18 @@ class User(db.Model, UserMixin, BaseMixin):
     )
     country: Mapped[str] = mapped_column(
         sa.CHAR(2),
-        default="XX"
+        default="XX",
+        server_default="XX",
+        nullable=False
     )
     sponsor_expire: Mapped[Optional[datetime]] = mapped_column(
         sa.DateTime(timezone=True),
-        default=None,
         nullable=True
     )
     register_at: Mapped[datetime] = mapped_column(
         sa.DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
+        server_default=sa.text("UTC_TIMESTAMP()"),
         nullable=False
     )
 
