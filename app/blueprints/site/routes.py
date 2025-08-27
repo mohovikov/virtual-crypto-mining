@@ -6,7 +6,7 @@ import app.forms.site as forms
 
 @site.route("/")
 def index():
-    return "Hello, world!"
+    return render_template("site/index.html")
 
 @site.route("/register", methods=["GET", "POST"])
 def register():
