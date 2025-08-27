@@ -1,6 +1,7 @@
 import os
 from flask import Flask, abort, send_from_directory
 
+import app.helpers.template_helper as helper
 from app import extensions as ext
 from app.constants import Privileges
 from app.config import Config
@@ -8,21 +9,23 @@ from app.config import Config
 
 def create_app() -> Flask:
     app = Flask(
-        import_name=__name__,
-        template_folder=Config.TEMPLATE_FOLDER,
-        static_folder=Config.STATIC_FOLDER
+        import_name = __name__,
+        template_folder = Config.TEMPLATE_FOLDER,
+        static_folder = Config.STATIC_FOLDER
     )
     app.config.from_object(Config)
 
     @app.context_processor
     def inject_global():
         return dict(
-            Privileges=Privileges,
-            has_privilege=Privileges.has_privilege,
-            has_any_privilege=Privileges.has_any_privilege,
-            is_restricted=Privileges.is_restricted,
-            is_banned=Privileges.is_banned,
-            is_locked=Privileges.is_locked
+            Privileges = Privileges,
+            has_privilege = Privileges.has_privilege,
+            has_any_privilege = Privileges.has_any_privilege,
+            is_restricted = Privileges.is_restricted,
+            is_banned = Privileges.is_banned,
+            is_locked = Privileges.is_locked,
+
+            version = helper.get_version()
         )
 
     @app.route("/media/<path:filename>")
