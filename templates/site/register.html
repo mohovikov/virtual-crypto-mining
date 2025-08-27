@@ -1,0 +1,42 @@
+{% extends 'layouts/site.html' %}
+
+{% set title = "Регистрация" %}
+
+{% block content %}
+<div class="banner-image text-white d-flex mb-3" style="background-image: url('https://wallpapers.com/images/hd/minimalist-winter-2160-x-1080-jclczorncv2q1s2h.jpg');">
+  <div class="container mt-auto">
+    <h1 class="display-5 fw-medium mb-3">{{ title }}</h1>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <form action="{{ url_for('site.register') }}" method="post">
+        {{ form.hidden_tag() }}
+        <div class="card rounded-4 shadow border-0">
+          <div class="card-body">
+            <div class="mb-3">
+              {{ form.username.label(class="form-label") }}
+              {{ form.username(pattern="^[A-Za-z0-9 _\[\]-]{3,32}$") }}
+            </div>
+            <div class="mb-3">
+              {{ form.email.label(class="form-label") }}
+              {{ form.email() }}
+            </div>
+            <div class="mb-3">
+              {{ form.password.label(class="form-label") }}
+              {{ form.password() }}
+            </div>
+            <div class="mb-0">
+              {{ form.confirm_password.label(class="form-label") }}
+              {{ form.confirm_password() }}
+            </div>
+          </div>
+          <div class="card-footer border-0 text-center">{{ form.submit() }}</div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
