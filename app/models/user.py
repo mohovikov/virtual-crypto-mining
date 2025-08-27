@@ -3,6 +3,7 @@ from typing import Optional
 from flask_login import UserMixin
 import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.extensions import db, login_manager
 from app.models import BaseMixin
@@ -68,7 +69,19 @@ class User(db.Model, UserMixin, BaseMixin):
         nullable=False
     )
 
+    def __init__(self, username: str, email: str) -> None:
+        self.username = username
+        self.email = email
+
+    def set_password(self, password: str):
+        """Хэширует пароль и сохраняет в password_hash"""
+        self.password_hash = generate_password_hash(password, method='pbkdf2:sha256')
+
+    def check_password(self, password: str) -> bool:
+        """Проверяет пароль по хэшу"""
+        return check_password_hash(self.password_hash, password)
+
 
 @login_manager.user_loader
-def load_user(uid):
-    return User.query.get(uid)
+def load_user(user_id):
+    return User.query.get(user_id)
