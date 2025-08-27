@@ -8,21 +8,50 @@ from app.models import User
 class RegisterForm(FlaskForm):
     username = forms.StringField(
         "Имя пользователя",
-        validators=[validators.DataRequired(), validators.Length(min=3, max=20)]
+        validators=[
+            validators.DataRequired(),
+            validators.Length(min=3, max=32)
+        ],
+        render_kw = {
+            "class": "form-control"
+        }
     )
     email = forms.StringField(
         "Email",
-        validators=[validators.DataRequired(), validators.Email()]
+        validators=[
+            validators.DataRequired(),
+            validators.Email()
+        ],
+        render_kw = {
+            "class": "form-control"
+        }
     )
     password = forms.PasswordField(
         "Пароль",
-        validators=[validators.DataRequired(), validators.Length(min=8)]
+        validators=[
+            validators.DataRequired(),
+            validators.Length(min=8)
+        ],
+        render_kw = {
+            "class": "form-control"
+        }
     )
     confirm_password = forms.PasswordField(
         "Подтверждение пароля",
-        validators=[validators.DataRequired(), validators.EqualTo("password")]
+        validators = [
+            validators.DataRequired(),
+            validators.EqualTo("password")
+        ],
+        render_kw = {
+            "class": "form-control"
+        }
     )
-    submit = forms.SubmitField("Зарегистрироваться")
+    submit = forms.SubmitField(
+        label = "Зарегистрироваться",
+        render_kw = {
+            "class": "btn btn-sm btn-primary"
+        }
+    )
 
     def validate_username(self, username):
         if User.query.filter_by(username=username.data).first():
