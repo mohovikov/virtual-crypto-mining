@@ -10,6 +10,13 @@ import app.services.site as services
 def index():
     return render_template("site/index.html")
 
+@site.route("/user/<int:user_id>")
+def profile(user_id):
+    return render_template(
+        "site/profile.html",
+        user = services.get_user_by_id(user_id)
+    )
+
 @site.route("/register", methods=["GET", "POST"])
 def register():
     form = forms.RegisterForm()
