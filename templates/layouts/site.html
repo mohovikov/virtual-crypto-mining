@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block custom_css %}{% endblock %}
   <title>{{ title }} - VCM</title>
 </head>
 <body class="d-grid min-vh-100" style="grid-template-rows: auto 1fr auto;">
@@ -46,6 +47,10 @@
       let toast = new bootstrap.Toast(toastEl, { delay: delay })
       toast.show()
     })
+
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el))
   </script>
+  {% block custom_js %}{% endblock %}
 </body>
 </html>
