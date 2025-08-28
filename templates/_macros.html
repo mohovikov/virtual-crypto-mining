@@ -1,0 +1,10 @@
+{% macro background(user) %}
+  {% if user.background_file %}
+    <style>
+      #content {
+        background: url("{{ url_for('media', filename='user/background/'~user.id~'/'~user.background_file) }}") no-repeat center;
+        background-size: cover;
+      }
+    </style>
+  {% endif %}
+{% endmacro %}
