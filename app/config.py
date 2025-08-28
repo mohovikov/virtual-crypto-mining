@@ -23,6 +23,9 @@ class Config:
     STATIC_FOLDER = os.path.join(BASE_DIR, "static")
     MEDIA_FOLDER = os.path.join(BASE_DIR, "media")
 
+    USER_AVATAR_FOLDER = os.path.join(MEDIA_FOLDER, "user", "avatar")
+    USER_BACKGROUND_FOLDER = os.path.join(MEDIA_FOLDER, "user", "background")
+
     MAIL_SERVER = os.environ.get("MAIL_SERVER", "")
     MAIL_PORT = int(os.environ.get("MAIL_PORT", 465))
     MAIL_USE_SSL = os.environ.get("MAIL_USE_SSL", False) in (True, "True")
