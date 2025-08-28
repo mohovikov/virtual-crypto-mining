@@ -8,4 +8,5 @@ Flask-Migrate
 Flask-SQLAlchemy
 Flask-WTF
 mysqlclient
+Pillow
 python-dotenv
