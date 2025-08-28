@@ -31,5 +31,15 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Media
+/media/**
+!/media/
+!/media/user/
+!/media/user/avatar/
+!/media/user/avatar/999
+!/media/user/background/
+!/media/user/background/999
+!**/.gitkeep
+
 # Cache
 .cache/
