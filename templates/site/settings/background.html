@@ -2,67 +2,32 @@
 
 {% set title = "Фон профиля" %}
 
+{% from "_macros.html" import background %}
 {% block custom_css %}
-<style>
-  #content {
-    background-image: url("https://i.pinimg.com/originals/92/6a/09/926a09ae459c2d427b2b1cf09d8f21db.jpg");
-    background-size: 120%;
-    background-position: center; /* по центру по умолчанию */
-    overflow: hidden;
-  }
-</style>
+  {{ background(current_user) }}
 {% endblock %}
 
 {% block content %}
 <div class="container my-3">
   <div class="row">
     <div class="col-md-3">{% include 'site/settings/sidebar.html' %}</div>
-    <div class="col-md-9"></div>
+    <div class="col-md-9">
+      <div class="card">
+        <form action="{{ url_for('site.settings.background') }}" method="POST" enctype="multipart/form-data">
+          {{ form.hidden_tag() }}
+          <div class="card-body text-center">
+            {% if current_user.background_file %}
+            <img src="{{ url_for('media', filename="user/background/"~current_user.id~"/"~current_user.background_file) }}" class="img-fluid img-thumbnail mb-3" alt="{{ current_user.username }} background">
+            {% endif %}
+            {{ form.background_file(accept="image/png, image/jpeg", class="form-control" + (" is-invalid" if form.background_file.errors else "")) }}
+            {% if form.background_file.errors %}
+            <div class="invalid-feedback">{{ form.background_file.errors[0] }}</div>
+            {% endif %}
+          </div>
+          <div class="card-footer text-center">{{ form.submit() }}</div>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
-{% endblock %}
-
-{% block custom_js %}
-<script>
-  const content = document.getElementById("content");
-
-  const strength = 30; // сила смещения (px)
-  const easing = 0.08; // плавность (0.1 быстрее, 0.02 медленнее)
-
-  let targetX = 0, targetY = 0;     // куда тянуть
-  let currentX = 0, currentY = 0;   // текущее положение
-  let rafId = null;
-
-  function animate() {
-    currentX += (targetX - currentX) * easing;
-    currentY += (targetY - currentY) * easing;
-
-    content.style.backgroundPosition = 
-      `calc(50% + ${currentX}px) calc(50% + ${currentY}px)`;
-
-    // продолжаем анимацию только если ещё есть движение
-    if (Math.abs(targetX - currentX) > 0.1 || Math.abs(targetY - currentY) > 0.1) {
-      rafId = requestAnimationFrame(animate);
-    } else {
-      rafId = null; // стоп
-    }
-  }
-
-  content.addEventListener("mousemove", (e) => {
-    const rect = content.getBoundingClientRect();
-    const relX = (e.clientX - rect.left) / rect.width - 0.5;
-    const relY = (e.clientY - rect.top) / rect.height - 0.5;
-
-    targetX = relX * strength;
-    targetY = relY * strength;
-
-    if (!rafId) rafId = requestAnimationFrame(animate);
-  });
-
-  content.addEventListener("mouseleave", () => {
-    targetX = 0;
-    targetY = 0;
-    if (!rafId) rafId = requestAnimationFrame(animate);
-  });
-</script>
 {% endblock %}

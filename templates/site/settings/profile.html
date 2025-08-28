@@ -2,15 +2,9 @@
 
 {% set title = "Настройки" %}
 
+{% from "_macros.html" import background %}
 {% block custom_css %}
-<style>
-  #content {
-    background-image: url("https://i.pinimg.com/originals/92/6a/09/926a09ae459c2d427b2b1cf09d8f21db.jpg");
-    background-size: 120%;       /* чуть больше, чтобы не видно было краёв */
-    background-position: center; /* по центру по умолчанию */
-    overflow: hidden;
-  }
-</style>
+  {{ background(current_user) }}
 {% endblock %}
 
 {% block content %}
@@ -20,49 +14,4 @@
     <div class="col-md-9"></div>
   </div>
 </div>
-{% endblock %}
-
-{% block custom_js %}
-<script>
-  const content = document.getElementById("content");
-
-  const strength = 30; // сила смещения (px)
-  const easing = 0.08; // плавность (0.1 быстрее, 0.02 медленнее)
-
-  let targetX = 0, targetY = 0;     // куда тянуть
-  let currentX = 0, currentY = 0;   // текущее положение
-  let rafId = null;
-
-  function animate() {
-    currentX += (targetX - currentX) * easing;
-    currentY += (targetY - currentY) * easing;
-
-    content.style.backgroundPosition = 
-      `calc(50% + ${currentX}px) calc(50% + ${currentY}px)`;
-
-    // продолжаем анимацию только если ещё есть движение
-    if (Math.abs(targetX - currentX) > 0.1 || Math.abs(targetY - currentY) > 0.1) {
-      rafId = requestAnimationFrame(animate);
-    } else {
-      rafId = null; // стоп
-    }
-  }
-
-  content.addEventListener("mousemove", (e) => {
-    const rect = content.getBoundingClientRect();
-    const relX = (e.clientX - rect.left) / rect.width - 0.5;
-    const relY = (e.clientY - rect.top) / rect.height - 0.5;
-
-    targetX = relX * strength;
-    targetY = relY * strength;
-
-    if (!rafId) rafId = requestAnimationFrame(animate);
-  });
-
-  content.addEventListener("mouseleave", () => {
-    targetX = 0;
-    targetY = 0;
-    if (!rafId) rafId = requestAnimationFrame(animate);
-  });
-</script>
 {% endblock %}
