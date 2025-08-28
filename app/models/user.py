@@ -52,6 +52,10 @@ class User(db.Model, UserMixin, BaseMixin):
         sa.String(255),
         nullable=True
     )
+    background_file: Mapped[Optional[str]] = mapped_column(
+        sa.String(255),
+        nullable=True
+    )
     country: Mapped[str] = mapped_column(
         sa.CHAR(2),
         default="XX",
