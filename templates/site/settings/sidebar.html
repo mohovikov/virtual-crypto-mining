@@ -1,0 +1,19 @@
+<div class="list-group rounded-3 shadow border-0">
+  <a href="{{ url_for('site.settings.profile') }}" class="list-group-item list-group-item-action {{ is_active('site.settings.profile') }}">Общие</a>
+  <a href="{{ url_for('site.settings.userpage') }}" class="list-group-item list-group-item-action {{ is_active('site.settings.userpage') }}">Страница пользователя</a>
+  <a href="{{ url_for('site.settings.avatar') }}" class="list-group-item list-group-item-action {{ is_active('site.settings.avatar') }}">Аватарка</a>
+  <a href="{{ url_for('site.settings.password') }}" class="list-group-item list-group-item-action {{ is_active('site.settings.password') }}">Пароль</a>
+
+  <a href="{{ url_for('site.settings.cryptocurrency') }}" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between {{ is_active('site.settings.cryptocurrency') }}">
+    <span>Криптовалюта</span>
+    <span class="badge text-bg-warning">Инвестор</span>
+  </a>
+  <a href="{{ url_for('site.settings.badge') }}" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between {{ is_active('site.settings.badge') }}">
+    <span>Бейджик</span>
+    <span class="badge text-bg-warning">Инвестор</span>
+  </a>
+  <a href="{{ url_for('site.settings.background') }}" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between {{ is_active('site.settings.background') }}">
+    <span>Задний фон профиля</span>
+    <span class="badge text-bg-warning">Инвестор</span>
+  </a>
+</div>
