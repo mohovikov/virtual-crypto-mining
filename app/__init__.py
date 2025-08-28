@@ -25,7 +25,9 @@ def create_app() -> Flask:
             is_banned = Privileges.is_banned,
             is_locked = Privileges.is_locked,
 
-            version = helper.get_version()
+            version = helper.get_version(),
+            is_active = helper.is_active,
+            is_active_prefix = helper.is_active_prefix
         )
 
     @app.route("/media/<path:filename>")
