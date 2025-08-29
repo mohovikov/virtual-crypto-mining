@@ -6,10 +6,21 @@ from PIL import Image
 from io import BytesIO
 from werkzeug.datastructures import FileStorage
 
+from app.helpers.template_helper import get_country_choices
+
 
 class SettingsForm(FlaskForm):
     username = forms.StringField(
         label = "Имя пользователя",
+        validators = [
+            validators.Optional()
+        ],
+        render_kw = {
+            "class": "form-control"
+        }
+    )
+    username_aka = forms.StringField(
+        label = "Дополнительное никнейм (не используется для входа)",
         validators = [
             validators.Optional()
         ],
@@ -32,6 +43,7 @@ class SettingsForm(FlaskForm):
         validators = [
             validators.Optional()
         ],
+        choices = get_country_choices,
         render_kw = {
             "class": "form-select"
         },
