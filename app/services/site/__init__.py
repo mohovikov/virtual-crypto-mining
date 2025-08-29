@@ -1,4 +1,6 @@
 from .settings_services import (
+    change_user_profile,
+    change_user_country,
     save_user_avatar,
     save_user_background
 )
@@ -10,6 +12,8 @@ from .user_services import (
 
 
 __all__ = [
+    "change_user_profile",
+    "change_user_country",
     "save_user_avatar",
     "save_user_background",
 

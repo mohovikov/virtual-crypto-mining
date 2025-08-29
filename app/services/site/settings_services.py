@@ -7,6 +7,28 @@ from app.forms.site.settings_form import SettingsForm
 import app.helpers.images_helper as images
 
 
+def change_user_profile(form: SettingsForm):
+    try:
+        current_user.username_aka = form.username_aka.data
+        db.session.commit()
+
+        return "Дополнительный никнейм успешно обновлен!", "success"
+    except Exception as ex:
+        db.session.rollback()
+        print(ex)
+        return f"Ошибка при сохранении:<br>{ex}", "danger"
+
+def change_user_country(form: SettingsForm):
+    try:
+        current_user.country = form.country.data
+        db.session.commit()
+
+        return "Страна успешно обновленна!", "success"
+    except Exception as ex:
+        db.session.rollback()
+        print(ex)
+        return f"Ошибка при сохранении:<br>{ex}", "danger"
+
 def save_user_avatar(form: SettingsForm):
     try:
         filename = images.save_user_file(
