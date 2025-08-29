@@ -21,6 +21,7 @@
         <div class="col-md-6">
           <div class="d-flex gap-3">
             {% if user.avatar_file %}
+            <img src="{{ url_for('media', filename="user/avatar/"~user.id~"/"~user.avatar_file) }}" alt="{{ user.username }} avatar" class="rounded" width="128" height="128">
             {% else %}
             <img src="https://ui-avatars.com/api/?name={{ user.username }}&size=128" alt="{{ user.username }} avatar" class="rounded" width="128" height="128">
             {% endif %}
