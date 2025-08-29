@@ -11,7 +11,66 @@
 <div class="container my-3">
   <div class="row">
     <div class="col-md-3">{% include 'site/settings/sidebar.html' %}</div>
-    <div class="col-md-9"></div>
+    <div class="col-md-9">
+      <div class="card mb-3">
+        <form action="{{ url_for('site.settings.profile') }}" method="post">
+          {{ form.hidden_tag() }}
+          <div class="card-body">
+            <div class="mb-3">
+              {{ form.username.label(class="form-label") }}
+              {{ form.username(disabled=True, readonly=True, value=current_user.username) }}
+            </div>
+            <div class="mb-3">
+              {{ form.email.label(class="form-label") }}
+              {{ form.email(disabled=True, readonly=True, value=current_user.email) }}
+            </div>
+            <div class="mb-0">
+              {{ form.username_aka.label(class="form-label") }}
+              {{ form.username_aka(value=current_user.username_aka or "") }}
+            </div>
+          </div>
+          <div class="card-footer">{{ form.submit() }}</div>
+        </form>
+      </div>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">{{ form.country.label.text }}</h5>
+          {% if has_privilege(Privileges.USER_SPONSOR) %}
+          <form action="{{ url_for('site.settings.country') }}" method="post">
+            {{ form.hidden_tag() }}
+            <div class="input-group">
+              <select name="{{ form.country.name }}" id="{{ form.country.name }}" class="form-select">
+                {% for k, v in form.country.choices %}
+                <option value="{{ k }}" {% if current_user.country == k %}selected{% endif %}>{{ v }}</option>
+                {% endfor %}
+              </select>
+              {{ form.submit() }}
+            </div>
+          </form>
+          {% else %}
+            {% include "_components/alerts/_sponsor_alert.html" %}
+          {% endif %}
+        </div>
+      </div>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Персональный бейджик</h5>
+          {% if has_privilege(Privileges.USER_SPONSOR) %}
+          {% else %}
+            {% include "_components/alerts/_sponsor_alert.html" %}
+          {% endif %}
+        </div>
+      </div>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Собственная криптовалюта</h5>
+          {% if has_privilege(Privileges.USER_SPONSOR) %}
+          {% else %}
+            {% include "_components/alerts/_sponsor_alert.html" %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}
