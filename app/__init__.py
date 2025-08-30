@@ -50,6 +50,9 @@ def create_app() -> Flask:
 
     ext.mail.init_app(app)
 
+    from app.blueprints.admin import admin
+    app.register_blueprint(admin)
+
     from app.blueprints.site import site
     app.register_blueprint(site)
 
