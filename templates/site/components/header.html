@@ -1,6 +1,9 @@
 <nav class="navbar navbar-expand-lg shadow">
   <div class="container">
-    <a class="navbar-brand" href="{{ url_for('site.index') }}">VCM</a>
+    <a class="navbar-brand" href="{{ url_for('site.index') }}">
+      <i class="fa-solid fa-coins"></i>
+      <span>VCM</span>
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -40,7 +43,7 @@
         {% if current_user.is_authenticated %}
           {% if has_privilege(Privileges.ADMIN_ACCESS_PANEL) %}
           <li class="nav-item">
-            <a class="btn btn-sm bg-body-tertiary" href="#" target="_blank">Админпанель</a>
+            <a class="btn btn-sm bg-body-tertiary" href="{{ url_for('admin.dashboard') }}" target="_blank">Админпанель</a>
           </li>
           {% endif %}
         <li class="nav-item dropdown">
