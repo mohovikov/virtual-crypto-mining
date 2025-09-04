@@ -5,7 +5,6 @@ import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app.constants.privileges import Privileges
 from app.extensions import db, login_manager
 from app.models import BaseMixin
 
