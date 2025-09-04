@@ -20,5 +20,10 @@
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">{% block content %}{% endblock %}</main>
     </div>
   </div>
+
+  {% include '_components/_flash_messages.html' %}
+
+  <script src="{{ url_for('static', filename='js/bundle.min.js') }}"></script>
+  {% block js %}{% endblock %}
 </body>
 </html>

@@ -5,6 +5,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from app.constants.privileges import Privileges
 from app.extensions import db, login_manager
 from app.models import BaseMixin
 
@@ -23,7 +24,7 @@ class User(db.Model, UserMixin, BaseMixin):
         unique=True,
         index=True
     )
-    username_aka: Mapped[str] = mapped_column(
+    username_aka: Mapped[Optional[str]] = mapped_column(
         sa.String(32),
         nullable=True
     )
@@ -37,7 +38,7 @@ class User(db.Model, UserMixin, BaseMixin):
         sa.String(255),
         nullable=False
     )
-    userpage: Mapped[str] = mapped_column(
+    userpage: Mapped[Optional[str]] = mapped_column(
         sa.Text,
         nullable=True
     )

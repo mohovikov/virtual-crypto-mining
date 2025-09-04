@@ -1,0 +1,243 @@
+{% extends 'layouts/admin.html' %}
+
+{% set title = "Редактирование пользователя "~user.username %}
+
+{% block content %}
+<h2 class="py-3 mb-3 border-bottom text-center">
+  <i class="fa-solid fa-user"></i>
+  <span>{{ title }}</span>
+</h2>
+<form action="{{ url_for('admin.user.edit', user_id = user.id) }}" method="post">
+  {{ form.hidden_tag() }}
+  <table class="table table-striped align-middle table-fixed">
+    <tbody>
+      <tr>
+        <td>{{ form.id.label }}</td>
+        <td>{{ form.id(value = user.id) }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.username.label }}</td>
+        <td>{{ form.username(value = user.username) }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.email.label }}</td>
+        <td>{{ form.email(value = user.email, readonly = True if user.id == current_user.id else False) }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.country.label }}</td>
+        <td>
+          <select name="{{ form.country.name }}" id="{{ form.country.name }}" class="form-select">
+            {% for k, v in form.country.choices %}
+            <option value="{{ k }}" {% if k == user.country %}selected{% endif %}>{{ v }}</option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Статус</td>
+        <td>
+          {% set text, category = check_account_status(user.privileges) %}
+          <span class="badge text-bg-{{ category }}">{{ text }}</span>
+        </td>
+      </tr>
+      <tr>
+        <td>{{ form.username_aka.label }}</td>
+        <td>{{ form.username_aka(value = user.username_aka or '') }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.userpage.label }}</td>
+        <td>
+          <textarea name="{{ form.userpage.name }}" id="{{ form.userpage.name }}" rows="10" class="form-control">{{ user.userpage or '' }}</textarea>
+        </td>
+      </tr>
+      <tr>
+        {% set disabled = True if user.id == current_user.id else False %}
+        <td>Привилегии</td>
+        <td>
+          <ul class="list-group">
+            {% for privilege in privileges_list(user.id, user.privileges, disabled) %}
+            <li class="list-group-item">
+              <input
+                class="form-check-input me-1"
+                type="checkbox"
+                onclick="updatePrivileges();"
+                value="{{ privilege.value }}"
+                name="privilege"
+                id="privilege"
+                {{ privilege.checked }}
+                {{ privilege.disabled }}
+                {{ privilege.gd }}
+              >
+              <label class="form-check-label" for="privilege">{{ privilege.name }} ({{ privilege.value }})</label>
+            </li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>{{ form.privileges_value.label }}</td>
+        <td>{{ form.privileges_value(value = user.privileges, readonly = (user.id == current_user.id)) }}</td>
+      </tr>
+      <tr>
+        <td>Группы привилегий</td>
+        <td>
+          <select name="" id="" class="form-select" onchange="groupUpdated();" {% if disabled %}disabled{% endif %} ></select>
+        </td>
+      </tr>
+      {% if user.avatar_file %}
+      <tr id="row-avatar">
+        <td>
+          <p class="mb-0">Аватарка</p>
+          <button
+            type="button"
+            class="btn btn-sm btn-link px-0"
+            data-bs-toggle="modal"
+            data-bs-target="#confirmDeleteModal"
+            data-url="{{ url_for('admin.user.manage_images', user_id = user.id, action = 'delete_avatar') }}"
+            data-row="row-avatar"
+            >Удалить аватарку</button>
+        </td>
+        <td>
+          <img src="{{ url_for('media', filename="user/avatar/"~user.id~"/"~user.avatar_file) }}" alt="{{ user.username }} avatar" class="rounded shadow-sm" width="128" height="128"">
+        </td>
+      </tr>
+      {% endif %}
+
+      {% if user.background_file %}
+      <tr id="row-background">
+        <td>
+          <p class="mb-0">Задний фон профиля</p>
+          <button
+            type="button"
+            class="btn btn-sm btn-link px-0"
+            data-bs-toggle="modal"
+            data-bs-target="#confirmDeleteModal"
+            data-url="{{ url_for('admin.user.manage_images', user_id = user.id, action = 'delete_background') }}"
+            data-row="row-background"
+          >Удалить фоновое изображение</></td>
+        <td>
+          <img src="{{ url_for('media', filename="user/background/"~user.id~"/"~user.background_file) }}" alt="{{ user.username }} background image" class="img-fluid w-50 rounded shadow-sm">
+        </td>
+      </tr>
+      {% endif %}
+      <tr>
+        <td colspan="2" class="text-center">
+          <button type="submit" class="btn btn-sm btn-primary">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span>Сохранить изменения</span>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
+<hr class="my-4">
+
+<div class="row">
+  <div class="col-6">
+    <div class="card">
+      <div class="card-header text-uppercase">Действия над пользователем</div>
+      <div class="card-body">
+        <div class="list-group">
+          <a href="#" class="list-group-item list-group-item-action list-group-item-success">
+            <i class="fa-solid fa-square-pen"></i>
+            <span>Редактировать бейджики</span>
+          </a>
+          {% if has_privilege(Privileges.USER_SPONSOR, user.privileges) %}
+          <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
+            <i class="fa-solid fa-handshake-slash"></i>
+            <span>Снять статус "Спонсор"</span>
+          </a>
+          {% endif %}
+          <a href="#" class="list-group-item list-group-item-action list-group-item-warning">
+            <i class="fa-solid fa-handshake"></i>
+            <span>Выдать статус "Спонсор"</span>
+          </a>
+          <a href="#" target="_blank" class="list-group-item list-group-item-action list-group-item-primary">
+            <i class="fa-solid fa-address-card"></i>
+            <span>Профиль пользователя</span>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
+            <i class="fa-solid fa-trash"></i>
+            <span>Удалить привязку 2FA</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="card">
+      <div class="card-header text-uppercase">Опасная зона</div>
+      <div class="card-body">
+        <div class="list-group">
+          <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
+            <i class="fa-solid fa-arrows-rotate"></i>
+            <span>Сбросить профиль</span>
+          </a>
+          {% if is_banned(user.privileges) %}
+          <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
+            <i class="fa-solid fa-lock"></i>
+            <span>Забанить пользователя</span>
+          </a>
+          {% else %}
+          <a href="#" class="list-group-item list-group-item-action list-group-item-success">
+            <i class="fa-solid fa-lock-open"></i>
+            <span>Разбанить пользователя</span>
+          </a>
+          {% endif %}
+
+          {% if is_restricted(user.privileges) %}
+          <a href="#" class="list-group-item list-group-item-action list-group-item-success">
+            <i class="fa-solid fa-minus"></i>
+            <span>Снять ограничения пользователя</span>
+          </a>
+          {% else %}
+          <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
+            <i class="fa-solid fa-plus"></i>
+            <span>Ограничить пользователя</span>
+          </a>
+          {% endif %}
+
+          <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
+            <i class="fa-solid fa-circle-minus"></i>
+            <span>Снять право редактировать бейдж</span>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action list-group-item-success">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span>Дать право редактировать бейдж</span>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
+            <i class="fa-solid fa-trash"></i>
+            <span class="text-uppercase fw-bold">Удалить аккаунт</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Подтверждение удаления</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        Вы уверены, что хотите удалить <span id="delete-type"></span>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Удалить</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  initDeleteWithModal("confirmDeleteModal")
+</script>
+{% endblock %}

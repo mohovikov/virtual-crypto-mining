@@ -2,6 +2,9 @@ from babel import Locale
 
 from flask_babel import get_locale
 from flask import request
+from flask_login import current_user
+
+from app.constants.privileges import Privileges
 
 
 def get_version() -> str:
@@ -19,6 +22,22 @@ def get_country_choices():
     choices = [(code, name) for code, name in countries.items() if len(code) == 2]
     choices.sort(key=lambda x: x[1])
     return choices
+
+def get_privileges_list(user_id: int, user_privileges: int, gd: bool) -> list[dict[str, str]]:
+    privileges_list: list = []
+
+    for privilege in Privileges:
+        if privilege.value <= 0:
+            continue
+        
+        privileges_list.append({
+            "name": privilege.name,
+            "value": privilege.value,
+            "checked": "checked" if (user_privileges & privilege.value) > 0 else "",
+            "disabled": "disabled" if (privilege.value <= 2 and not gd) else "",
+            "gd": "disabled" if gd else False
+        })
+    return privileges_list
 
 def is_active(endpoint):
     return "active" if request.endpoint == endpoint else ""

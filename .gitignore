@@ -5,6 +5,9 @@ __pycache__/
 *.pyd
 *.so
 
+# node
+node_modules/
+
 # Virtual environment
 venv/
 .venv/
@@ -40,6 +43,9 @@ Thumbs.db
 !/media/user/background/
 !/media/user/background/999
 !**/.gitkeep
+
+# scripts
+static/js/*.js
 
 # Cache
 .cache/

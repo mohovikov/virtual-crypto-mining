@@ -17,29 +17,6 @@
   <main id="content">{% block content %}{% endblock %}</main>
   {% include 'site/components/footer.html' %}
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% set categories = {
-        'success': {'icon': 'fa-circle-check', 'title': 'Успех'},
-        'info':    {'icon': 'fa-info-circle',  'title': 'Информация'},
-        'danger':  {'icon': 'fa-triangle-exclamation', 'title': 'Ошибка'},
-        'warning': {'icon': 'fa-exclamation-triangle', 'title': 'Внимание'}
-      } %}
-      <div class="toast-container position-fixed top-0 end-0 p-3">
-        {% for category, message in messages %}
-        <div class="toast text-bg-{{ category }}" role="alert" aria-live="assertive" aria-atomic="true">
-          <div class="toast-header">
-            <i class="fa-solid {{ categories[category].icon }} me-2"></i>
-            <strong class="me-auto">{{ categories[category].title }}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-          </div>
-          <div class="toast-body">{{ message|safe }}</div>
-        </div>
-        {% endfor %}
-      </div>
-    {% endif %}
-  {% endwith %}
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/js/bootstrap.bundle.min.js" integrity="sha512-Tc0i+vRogmX4NN7tuLbQfBxa8JkfUSAxSFVzmU31nVdHyiHElPPy2cWfFacmCJKw0VqovrzKhdd2TSTMdAxp2g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script type="text/javascript">
     document.querySelectorAll('.toast').forEach(function (toastEl, index) {

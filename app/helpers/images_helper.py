@@ -22,8 +22,7 @@ def save_user_file(file, user_id: str, file_type: str, folder: str) -> str:
 
     filename = hashed_filename(file, user_id, file_type)
 
-    if os.path.exists(folder):
-        shutil.rmtree(folder)
+    delete_user_image_folder(folder)
 
     os.makedirs(folder, exist_ok=True)
 
@@ -34,3 +33,7 @@ def save_user_file(file, user_id: str, file_type: str, folder: str) -> str:
     file.save(filepath)
 
     return filename
+
+def delete_user_image_folder(folder: str) -> None:
+    if os.path.exists(folder):
+        shutil.rmtree(folder)

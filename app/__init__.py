@@ -19,11 +19,12 @@ def create_app() -> Flask:
     def inject_global():
         return dict(
             Privileges = Privileges,
+            privileges_list = helper.get_privileges_list,
             has_privilege = Privileges.has_privilege,
             has_any_privilege = Privileges.has_any_privilege,
             is_restricted = Privileges.is_restricted,
             is_banned = Privileges.is_banned,
-            is_locked = Privileges.is_locked,
+            check_account_status = Privileges.check_account_status,
 
             version = helper.get_version(),
             is_active = helper.is_active,
