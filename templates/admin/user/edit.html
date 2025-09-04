@@ -55,7 +55,7 @@
         <td>Привилегии</td>
         <td>
           <ul class="list-group">
-            {% for privilege in privileges_list(user.id, user.privileges, disabled) %}
+            {% for privilege in privileges_list(user.privileges, disabled) %}
             <li class="list-group-item">
               <input
                 class="form-check-input me-1"

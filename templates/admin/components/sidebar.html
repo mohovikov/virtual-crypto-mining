@@ -18,6 +18,12 @@
             <span>Пользователи</span>
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-2 {{ is_active_prefix('admin.privileges.all') }}" href="{{ url_for('admin.privileges.all') }}">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>Группы привилегий</span>
+          </a>
+        </li>
       </ul>
       <hr class="my-3">
       <ul class="nav flex-column mb-auto">

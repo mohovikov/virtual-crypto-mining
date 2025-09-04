@@ -1,6 +1,7 @@
 import os
 from flask import Flask, abort, send_from_directory
 
+from app.services.admin import get_privileges_group_by_privileges
 import app.helpers.template_helper as helper
 from app import extensions as ext
 from app.constants import Privileges
@@ -25,6 +26,8 @@ def create_app() -> Flask:
             is_restricted = Privileges.is_restricted,
             is_banned = Privileges.is_banned,
             check_account_status = Privileges.check_account_status,
+
+            check_privileges_group = get_privileges_group_by_privileges,
 
             version = helper.get_version(),
             is_active = helper.is_active,

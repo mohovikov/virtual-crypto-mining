@@ -23,7 +23,7 @@ def get_country_choices():
     choices.sort(key=lambda x: x[1])
     return choices
 
-def get_privileges_list(user_id: int, user_privileges: int, gd: bool) -> list[dict[str, str]]:
+def get_privileges_list(user_privileges: int, gd: bool) -> list[dict[str, str]]:
     privileges_list: list = []
 
     for privilege in Privileges:

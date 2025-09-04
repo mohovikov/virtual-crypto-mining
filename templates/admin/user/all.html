@@ -78,6 +78,7 @@
         <th scope="col">Имя пользователя</th>
         <th scope="col">Email</th>
         <th scope="col">Привилегии</th>
+        <th scope="col">Группа</th>
         <th scope="col">Статус</th>
         <th scope="col">Дата регистрации</th>
         <th scope="col">Действия</th>
@@ -92,6 +93,10 @@
           <a href="mailto:{{ user.email }}">{{ user.email }}</a>
         </td>
         <td>{{ user.privileges }}</td>
+        <td>
+          {% set name, color = check_privileges_group(user.privileges) %}
+          <span class="badge text-bg-{{ color }}">{{ name }}</span>
+        </td>
         <td>
           {% set text, category = check_account_status(user.privileges) %}
           <span class="badge text-bg-{{ category }}">{{ text }}</span>
