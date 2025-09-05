@@ -1,76 +1,85 @@
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from flask_login import UserMixin
-import sqlalchemy as sa
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import CHAR, BigInteger, DateTime, Integer, String, Text, text
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.extensions import db, login_manager
-from app.models import BaseMixin
+from app.models.base import BaseMixin
 
+
+if TYPE_CHECKING:
+    from app.models import UserBadge
 
 class User(db.Model, UserMixin, BaseMixin):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(
-        sa.Integer,
-        primary_key=True,
-        autoincrement=True
+        Integer,
+        primary_key = True,
+        autoincrement = True
     )
     username: Mapped[str] = mapped_column(
-        sa.String(32),
-        nullable=False,
-        unique=True,
-        index=True
+        String(32),
+        nullable = False,
+        unique = True,
+        index = True
     )
     username_aka: Mapped[Optional[str]] = mapped_column(
-        sa.String(32),
-        nullable=True
+        String(32),
+        nullable = True
     )
     email: Mapped[str] = mapped_column(
-        sa.String(254),
-        nullable=False,
-        unique=True,
-        index=True
+        String(254),
+        nullable = False,
+        unique = True,
+        index = True
     )
     password_hash: Mapped[str] = mapped_column(
-        sa.String(255),
-        nullable=False
+        String(255),
+        nullable = False
     )
     userpage: Mapped[Optional[str]] = mapped_column(
-        sa.Text,
-        nullable=True
+        Text,
+        nullable = True
     )
     privileges: Mapped[int] = mapped_column(
-        sa.BigInteger,
-        default=3,
-        nullable=False,
-        index=True,
-        server_default="3"
+        BigInteger,
+        default = 3,
+        nullable = False,
+        index = True,
+        server_default = "3"
     )
     avatar_file: Mapped[Optional[str]] = mapped_column(
-        sa.String(255),
-        nullable=True
+        String(255),
+        nullable = True
     )
     background_file: Mapped[Optional[str]] = mapped_column(
-        sa.String(255),
-        nullable=True
+        String(255),
+        nullable = True
     )
     country: Mapped[str] = mapped_column(
-        sa.CHAR(2),
-        default="XX",
-        server_default="XX",
-        nullable=False
+        CHAR(2),
+        default = "XX",
+        server_default = "XX",
+        nullable = False
     )
     sponsor_expire: Mapped[Optional[datetime]] = mapped_column(
-        sa.DateTime(timezone=True),
-        nullable=True
+        DateTime(timezone = True),
+        nullable = True
     )
     register_at: Mapped[datetime] = mapped_column(
-        sa.DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
-        server_default=sa.text("UTC_TIMESTAMP()"),
-        nullable=False
+        DateTime(timezone = True),
+        default = lambda: datetime.now(timezone.utc),
+        server_default = text("UTC_TIMESTAMP()"),
+        nullable = False
+    )
+
+    badges: Mapped[list["UserBadge"]] = relationship(
+        "UserBadge",
+        back_populates="user",
+        uselist = True
     )
 
     def __init__(self, username: str, email: str) -> None:

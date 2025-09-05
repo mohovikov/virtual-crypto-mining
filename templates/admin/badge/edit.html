@@ -1,0 +1,75 @@
+{% extends 'layouts/admin.html' %}
+
+{% set title = "Редактирование бейджика «"~badge.name~"»" %}
+
+{% block content %}
+<h2 class="py-3 mb-3 border-bottom text-center">
+  <i class="fa-solid fa-certificate"></i>
+  <span>{{ title }}</span>
+</h2>
+
+<form action="{{ url_for('admin.badge.edit', id = badge.id) }}" method="post">
+  {{ form.hidden_tag() }}
+  <table class="table table-striped w-50 mx-auto align-middle">
+    <tbody>
+      <tr>
+        <td>{{ form.name.label }}</td>
+        <td>{{ form.name(value = badge.name) }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.description.label }}</td>
+        <td>{{ form.description(value = badge.description) }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.icon.label }}</td>
+        <td>{{ form.icon(placeholder = "fa-solid fa-certificate", value = badge.icon) }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.color.label }}</td>
+        <td>
+          <select name="{{ form.color.name }}" id="{{ form.color.name }}" class="form-select">
+            {% for k, v in form.color.choices %}
+            <option value="{{ k }}" {% if k == badge.color %}selected{% endif %}>{{ v }}</option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-center">
+          <button
+            type="button"
+            class="btn btn-sm btn-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteBadgeModal"
+          >
+            <i class="fa-solid fa-trash"></i>
+            <span>Удалить бейджик</span>
+          </button>
+          <button type="submit" class="btn btn-sm btn-primary">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span>Изменить бейджик</span>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
+<div class="modal fade" id="deleteBadgeModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Подтверждение удаления</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">Вы уверены, что хотите удалить бейджик<br>«<b>{{ badge.name }}</b>»?</div>
+      <div class="modal-footer">
+        <form action="{{ url_for('admin.badge.delete', id = badge.id) }}" method="post">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+          <button type="submit" class="btn btn-danger">Удалить</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -13,13 +13,19 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link d-flex align-items-center gap-2 {{ is_active_prefix('admin.user.all') }}" href="{{ url_for('admin.user.all') }}">
+          <a class="nav-link d-flex align-items-center gap-2 {{ is_active_prefix('admin.user') }}" href="{{ url_for('admin.user.all') }}">
             <i class="fa-solid fa-users"></i>
             <span>Пользователи</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link d-flex align-items-center gap-2 {{ is_active_prefix('admin.privileges.all') }}" href="{{ url_for('admin.privileges.all') }}">
+          <a class="nav-link d-flex align-items-center gap-2 {{ is_active_prefix('admin.badge') }}" href="{{ url_for('admin.badge.all', page = 1) }}">
+            <i class="fa-solid fa-certificate"></i>
+            <span>Бейджики</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center gap-2 {{ is_active_prefix('admin.privileges') }}" href="{{ url_for('admin.privileges.all') }}">
             <i class="fa-solid fa-layer-group"></i>
             <span>Группы привилегий</span>
           </a>

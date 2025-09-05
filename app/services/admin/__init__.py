@@ -1,3 +1,12 @@
+from .badge_services import (
+    get_all_badges,
+    get_all_badges_by_page,
+    get_badge_by_id,
+    create_badge,
+    update_badge,
+    update_user_badges,
+    delete_badge
+)
 from .privileges_group_services import (
     get_all_privileges_group,
     get_privileges_group_by_id,
@@ -19,6 +28,14 @@ from .user_services import (
 
 
 __all__ = [
+    "get_all_badges",
+    "get_all_badges_by_page",
+    "get_badge_by_id",
+    "create_badge",
+    "update_badge",
+    "update_user_badges",
+    "delete_badge",
+
     "get_all_privileges_group",
     "get_privileges_group_by_id",
     "get_privileges_group_by_privileges",

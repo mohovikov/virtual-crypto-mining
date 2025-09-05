@@ -1,0 +1,62 @@
+{% extends 'layouts/admin.html' %}
+
+{% set title = "Бейджики пользователя "~user.username~"" %}
+
+{% block content %}
+<h2 class="py-3 mb-3 border-bottom text-center">
+  <i class="fa-solid fa-certificate"></i>
+  <span>{{ title }}</span>
+</h2>
+
+<form action="{{ url_for('admin.badge.user_badges', user_id = user.id) }}" method="POST">
+  {{ form.hidden_tag() }}
+  <div class="card">
+    <div class="card-header text-center">
+      <div class="btn-group btn-group-sm">
+        <button type="button" id="select-all" class="btn btn-primary btn-sm" onclick="selectAllBadges()">Выбрать все</button>
+        <button type="button" id="deselect-all" class="btn btn-secondary btn-sm" onclick="deselectAllBadges()">Снять все</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        {% for chunk in badges|batch(25, fill_with=None) %}
+        <div class="col-md-3">
+          <ul class="list-group mb-3">
+            {% for badge in chunk if badge %}
+            <li class="list-group-item">
+              <input
+                class="form-check-input me-1"
+                type="checkbox"
+                name="{{ form.badges.name }}"
+                value="{{ badge.id }}"
+                id="badge-{{ badge.id }}"
+                {% if badge.id in user_badges %}checked{% endif %}
+              >
+              <label class="form-check-label" for="badge-{{ badge.id }}">{{ badge.name }}</label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="card-footer text-center">
+      <button type="submit" class="btn btn-sm btn-primary">Сохранить изменения</button>
+    </div>
+  </div>
+</form>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  function selectAllBadges() {
+    const checkboxes = document.querySelectorAll('input[name="badges"]')
+    checkboxes.forEach(cb => cb.checked = true)
+  }
+
+  function deselectAllBadges() {
+    const checkboxes = document.querySelectorAll('input[name="badges"]')
+    checkboxes.forEach(cb => cb.checked = false)
+  }
+</script>
+{% endblock %}
