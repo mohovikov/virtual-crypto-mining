@@ -53,6 +53,11 @@ def create_app() -> Flask:
     ext.login_manager.init_app(app)
 
     ext.mail.init_app(app)
+    ext.scheduler.init_app(app)
+    ext.scheduler.start()
+
+    from app import tasks
+    tasks.init(app)
 
     from app.blueprints.admin import admin
     app.register_blueprint(admin)

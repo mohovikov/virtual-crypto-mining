@@ -1,0 +1,45 @@
+{% extends 'layouts/admin.html' %}
+
+{% set title = "Выдача / продление спонсора для "~user.username %}
+
+{% block content %}
+<h2 class="py-3 mb-3 border-bottom text-center">
+  <i class="fa-solid fa-user"></i>
+  <span>{{ title }}</span>
+</h2>
+
+<form action="{{ url_for('admin.user.award_sponsor', user_id = user.id) }}" method="post">
+  {{ form.hidden_tag() }}
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          {{ form.amount.label(class="form-label") }}
+          <div class="input-group">
+            <span class="input-group-text">
+              <i class="fa-solid fa-clock"></i>
+            </span>
+            {{ form.amount() }}
+            {{ form.type() }}
+          </div>
+          {% if user.sponsor_expire %}
+          <p class="card-text mt-3">У пользователя <b>{{ user.username }}</b> есть активный статус спонсора. Он истекает <time class="js-timeago" data-utc="{{ user.sponsor_expire }}"><i class="fa-solid fa-circle-notch fa-spin"></i><span>Загрузка...</span></p>
+          {% endif %}
+        </div>
+        <div class="card-footer text-center">
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-handshake"></i>
+            <span>Выдать / продлить спонсорство</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  initTimeago()
+</script>
+{% endblock %}

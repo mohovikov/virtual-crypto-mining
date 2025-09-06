@@ -1,3 +1,4 @@
+from flask_apscheduler import APScheduler
 from flask_babel import Babel
 from flask_login import LoginManager
 from flask_mailman import Mail
@@ -10,3 +11,4 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 mail = Mail()
 migrate = Migrate()
+scheduler = APScheduler()

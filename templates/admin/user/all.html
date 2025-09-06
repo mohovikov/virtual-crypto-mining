@@ -71,13 +71,12 @@
 </div>
 
 <div class="table-responsive mt-4">
-  <table class="table table-striped align-middle text-center">
+  <table class="table table-striped align-middle w-75 mx-auto text-center">
     <thead>
       <tr>
         <th scope="col">ID</th>
         <th scope="col">Имя пользователя</th>
         <th scope="col">Email</th>
-        <th scope="col">Привилегии</th>
         <th scope="col">Группа</th>
         <th scope="col">Статус</th>
         <th scope="col">Дата регистрации</th>
@@ -92,7 +91,6 @@
         <td>
           <a href="mailto:{{ user.email }}">{{ user.email }}</a>
         </td>
-        <td>{{ user.privileges }}</td>
         <td>
           {% set name, color = check_privileges_group(user.privileges) %}
           <span class="badge text-bg-{{ color }}">{{ name }}</span>

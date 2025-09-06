@@ -33,7 +33,8 @@ def edit(user_id: int):
         "admin/user/edit.html",
         user = user,
         form = form,
-        global_disabled = global_disabled
+        global_disabled = global_disabled,
+        privileges = services.get_all_privileges_group()
     )
 
 @user.route("/<int:user_id>/manage-ban")
@@ -60,3 +61,25 @@ def manage_images(user_id):
     if not success:
         return jsonify({"success": success, "message": message, "category": category}), 400
     return jsonify({"success": success, "message": message, "category": category})
+
+@user.route("/<int:user_id>/award-sponsor", methods=["GET", "POST"])
+def award_sponsor(user_id):
+    form = forms.SponsorAwardForm()
+    user = services.get_user_by_id(user_id)
+
+    if not user:
+        flash("Такого пользователя не существует!", "warning")
+        return redirect(url_for('admin.user.all'))
+
+    if form.validate_on_submit():
+        success, message, category = services.give_sponsorship(user, form)
+        if not success:
+            flash(message, category)
+        flash(message, category)
+        return redirect(url_for('admin.user.edit', user_id = user.id))
+
+    return render_template(
+        "admin/user/award_sponsor.html",
+        form = form,
+        user = user
+    )

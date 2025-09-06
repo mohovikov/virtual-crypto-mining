@@ -81,7 +81,11 @@
       <tr>
         <td>Группы привилегий</td>
         <td>
-          <select name="" id="" class="form-select" onchange="groupUpdated();" {% if disabled %}disabled{% endif %} ></select>
+          <select id="privileges-group" class="form-select" onchange="groupUpdated();" {% if disabled %}disabled{% endif %} >
+            {% for privilege in privileges %}
+            <option value="{{ privilege.privileges }}" {% if privilege.privileges == user.privileges %}selected{% endif %}>{{ privilege.name }} ({{ privilege.privileges }})</option>
+            {% endfor %}
+          </select>
         </td>
       </tr>
       {% if user.avatar_file %}
@@ -144,15 +148,9 @@
             <i class="fa-solid fa-square-pen"></i>
             <span>Редактировать бейджики</span>
           </a>
-          {% if has_privilege(Privileges.USER_SPONSOR, user.privileges) %}
-          <a href="#" class="list-group-item list-group-item-action list-group-item-danger">
-            <i class="fa-solid fa-handshake-slash"></i>
-            <span>Снять статус "Спонсор"</span>
-          </a>
-          {% endif %}
-          <a href="#" class="list-group-item list-group-item-action list-group-item-warning">
-            <i class="fa-solid fa-handshake"></i>
-            <span>Выдать статус "Спонсор"</span>
+          <a href="{{ url_for('admin.user.award_sponsor', user_id = user.id) }}" class="list-group-item list-group-item-action list-group-item-warning">
+            <i class="fa-solid fa-gear"></i>
+            <span>Управление статусом "Спонсор"</span>
           </a>
           <a href="#" target="_blank" class="list-group-item list-group-item-action list-group-item-primary">
             <i class="fa-solid fa-address-card"></i>

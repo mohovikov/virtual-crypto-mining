@@ -15,6 +15,9 @@ from .privileges_group_services import (
     save_privileges_group,
     delete_privileges_group
 )
+from .sponsor_services import (
+    give_sponsorship
+)
 
 from .user_services import (
     get_user_stats,
@@ -42,6 +45,8 @@ __all__ = [
     "create_privileges_group",
     "save_privileges_group",
     "delete_privileges_group",
+
+    "give_sponsorship",
 
     "get_user_stats",
     "get_all_users",
